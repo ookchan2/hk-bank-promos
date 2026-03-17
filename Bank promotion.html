@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HK Virtual Bank Promotions 香港虛擬銀行優惠追蹤器</title>
+<style>
+:root{
+  --bg:#06101e;--surface:#0c1929;--card:#0f1e30;--border:#182d44;
+  --text:#ddeeff;--muted:#3f5a78;--dim:#6a8dae;
+  --green:#1ed97a;--red:#ff4060;--gold:#f5a623;
+  --blue:#3b82f6;--purple:#8b5cf6;--orange:#f97316;--cyan:#06b6d4;
+  --za:#e63946;--welab:#7c3aed;--pao:#0ea5e9;
+  --livi:#f97316;--airstar:#06b6d4;--fusion:#14b8a6;--mox:#ec4899;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px}
+button{cursor:pointer;font-family:inherit}
+.hdr{background:linear-gradient(135deg,#0c1929,#0f1e30);border-bottom:1px solid var(--border);
+  padding:16px 20px;position:sticky;top:0;z-index:100}
+.hdr-inner{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{font-size:1.8rem}
+.logo-title{font-size:1.1rem;font-weight:900;background:linear-gradient(135deg,#f5a623,#f97316);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo-sub{font-size:.62rem;color:var(--muted);margin-top:2px}
+.hdr-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border-radius:20px;padding:4px 12px;font-size:.67rem;font-weight:700}
+.chip-gold{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);color:var(--gold)}
+.chip-green{background:rgba(30,217,122,.1);border:1px solid rgba(30,217,122,.25);color:var(--green)}
+.search-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px}
+.search-inner{max-width:1400px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.s-input{flex:1;min-width:200px;background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:10px;padding:8px 14px;color:var(--text);font-size:.8rem;outline:none}
+.s-input:focus{border-color:var(--gold)}
+.s-input::placeholder{color:var(--muted)}
+.s-label{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--dim);cursor:pointer;white-space:nowrap}
+.s-label input{accent-color:var(--green)}
+.s-select{background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--text);
+  padding:7px 10px;border-radius:8px;font-size:.72rem;outline:none;cursor:pointer}
+.s-select option{background:var(--surface)}
+.bank-tabs-wrap{background:rgba(0,0,0,.2);border-bottom:1px solid var(--border);padding:10px 20px;overflow-x:auto}
+.bank-tabs{max-width:1400px;margin:0 auto;display:flex;gap:7px;white-space:nowrap}
+.btab{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;
+  border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--dim);
+  font-size:.71rem;font-weight:700;transition:all .2s}
+.btab:hover{transform:translateY(-1px)}
+.btab.act{color:#fff;border-color:transparent}
+.btab-all.act{background:linear-gradient(135deg,#f5a623,#f97316)}
+.btab-za.act{background:linear-gradient(135deg,#e63946,#c81d25)}
+.btab-welab.act{background:linear-gradient(135deg,#7c3aed,#5b21b6)}
+.btab-pao.act{background:linear-gradient(135deg,#0ea5e9,#0284c7)}
+.btab-livi.act{background:linear-gradient(135deg,#f97316,#ea580c)}
+.btab-airstar.act{background:linear-gradient(135deg,#06b6d4,#0891b2)}
+.btab-fusion.act{background:linear-gradient(135deg,#14b8a6,#0d9488)}
+.btab-mox.act{background:linear-gradient(135deg,#ec4899,#db2777)}
+.btab-cnt{font-size:.6rem;background:rgba(255,255,255,.18);padding:1px 6px;border-radius:7px;min-width:16px;text-align:center}
+.type-wrap{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 20px}
+.type-inner{max-width:1400px;margin:0 auto}
+.type-lbl{font-size:.6rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.type-tabs{display:flex;gap:5px;flex-wrap:wrap}
+.ttab{display:inline-flex;align-items:center;gap:4px;font-size:.68rem;font-weight:700;
+  padding:5px 11px;border-radius:14px;border:1px solid var(--border);
+  background:rgba(255,255,255,.03);color:var(--dim);transition:all .2s}
+.ttab:hover{transform:translateY(-1px);border-color:#2a4060}
+.ttab.act{background:rgba(245,166,35,.12);border-color:rgba(245,166,35,.4);color:var(--gold)}
+.ttab-cnt{font-size:.58rem;background:rgba(255,255,255,.1);padding:1px 5px;border-radius:5px}
+.main{max-width:1400px;margin:0 auto;padding:20px 16px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;flex:1;min-width:100px}
+.stat-v{font-size:1.4rem;font-weight:900}
+.stat-l{font-size:.62rem;color:var(--muted);margin-top:3px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.leg{display:flex;align-items:center;gap:5px;font-size:.67rem;color:var(--dim)}
+.ldot{width:9px;height:9px;border-radius:50%}
+.leg-sep{flex:1}
+.sh{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.sh-title{font-size:.9rem;font-weight:800}
+.badge{font-size:.58rem;font-weight:800;padding:2px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:.4px}
+.b-gold{background:rgba(245,166,35,.12);color:var(--gold)}
+.b-blue{background:rgba(59,130,246,.12);color:var(--blue)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px;margin-bottom:30px}
+.pc{background:var(--card);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s;position:relative}
+.pc:hover{transform:translateY(-3px);border-color:#253d5c}
+.pc-bar{height:3px}
+.pc-bar-za{background:linear-gradient(90deg,#e63946,#c81d25)}
+.pc-bar-welab{background:linear-gradient(90deg,#7c3aed,#5b21b6)}
+.pc-bar-pao{background:linear-gradient(90deg,#0ea5e9,#0284c7)}
+.pc-bar-livi{background:linear-gradient(90deg,#f97316,#ea580c)}
+.pc-bar-airstar{background:linear-gradient(90deg,#06b6d4,#0891b2)}
+.pc-bar-fusion{background:linear-gradient(90deg,#14b8a6,#0d9488)}
+.pc-bar-mox{background:linear-gradient(90deg,#ec4899,#db2777)}
+.pc-head{padding:13px 15px 8px;border-bottom:1px solid var(--border)}
+.pc-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:6px;flex-wrap:wrap}
+.pc-bank{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:5px}
+.bdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.v-badge{font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:6px}
+.v-valid{background:rgba(30,217,122,.1);color:var(--green)}
+.v-expiring{background:rgba(249,115,22,.1);color:var(--orange)}
+.v-expired{background:rgba(255,64,96,.1);color:var(--red)}
+.v-ongoing{background:rgba(245,166,35,.1);color:var(--gold)}
+.pc-name{font-size:.87rem;font-weight:800;line-height:1.35;margin-bottom:4px}
+.pc-pills{display:flex;gap:4px;flex-wrap:wrap}
+.pill{font-size:.57rem;font-weight:800;padding:2px 6px;border-radius:5px;
+  background:rgba(245,166,35,.08);color:var(--gold);border:1px solid rgba(245,166,35,.2)}
+.pc-hl{margin:0 15px 0;padding:8px 10px;background:rgba(245,166,35,.06);
+  border-left:3px solid var(--gold);border-radius:0 6px 6px 0;font-size:.74rem;font-weight:700;color:var(--gold)}
+.pc-body{padding:10px 15px;flex:1;display:flex;flex-direction:column;gap:6px}
+.pc-row{display:flex;gap:8px;font-size:.71rem}
+.pc-row-i{width:16px;text-align:center;flex-shrink:0;font-size:.75rem}
+.pc-row-k{color:var(--muted);min-width:64px;font-weight:700;font-size:.67rem;white-space:nowrap}
+.pc-row-v{color:var(--dim);flex:1;line-height:1.5}
+.pc-row-v b{color:var(--text)}
+.pc-sum{font-size:.72rem;color:var(--dim);line-height:1.6;padding:8px 10px;
+  background:rgba(255,255,255,.02);border-radius:7px}
+.pc-foot{padding:8px 15px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pc-tc{font-size:.65rem;color:var(--blue)}
+.pc-tc:hover{color:#93c5fd}
+.exp-overlay{position:absolute;inset:0;background:rgba(6,16,30,.6);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;pointer-events:none}
+.exp-lbl{background:rgba(255,64,96,.15);border:2px solid rgba(255,64,96,.4);
+  color:var(--red);font-weight:800;padding:8px 18px;border-radius:8px;font-size:.8rem;transform:rotate(-3deg)}
+.empty{grid-column:1/-1;text-align:center;padding:48px 20px;color:var(--muted)}
+.empty-ico{font-size:2.5rem;margin-bottom:10px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:28px 0}
+.cmp-desc{font-size:.74rem;color:var(--dim);margin-bottom:12px;line-height:1.7;
+  background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:10px;padding:10px 14px}
+.cmp-scroll{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+.cmp-tbl{width:100%;border-collapse:collapse;min-width:780px}
+.cmp-tbl th{background:rgba(255,255,255,.04);padding:10px 13px;font-size:.67rem;font-weight:800;
+  text-transform:uppercase;letter-spacing:.4px;color:var(--dim);border-bottom:1px solid var(--border);
+  white-space:nowrap;text-align:left}
+.cmp-tbl th.za-h{color:var(--za);background:rgba(230,57,70,.06)}
+.cmp-tbl td{padding:8px 13px;font-size:.72rem;border-bottom:1px solid rgba(24,45,68,.5);vertical-align:top;line-height:1.5}
+.cmp-tbl tr:last-child td{border-bottom:none}
+.cmp-tbl td:first-child{font-weight:700;color:var(--dim);font-size:.67rem;white-space:nowrap;background:rgba(255,255,255,.015)}
+.cmp-tbl td.za-col{background:rgba(230,57,70,.04)}
+.cmp-tbl tr:hover td{background:rgba(255,255,255,.02)}
+.win{color:var(--green);font-weight:700}
+.ok{color:var(--text)}
+.na{color:var(--muted);font-style:italic;font-size:.65rem}
+.warn{color:var(--gold)}
+.data-notice{background:rgba(249,115,22,.06);border:1px solid rgba(249,115,22,.2);
+  border-radius:10px;padding:12px 16px;font-size:.74rem;color:#fbbf24;margin-bottom:20px;line-height:1.7}
+.data-notice strong{color:var(--orange)}
+.stt{position:fixed;bottom:24px;right:24px;width:38px;height:38px;border-radius:50%;
+  background:rgba(245,166,35,.15);border:1px solid rgba(245,166,35,.3);color:var(--gold);
+  font-size:1.1rem;display:none;align-items:center;justify-content:center;z-index:90}
+.stt.show{display:flex}
+.cmp-note{font-size:.67rem;color:var(--muted);margin-top:12px;padding:8px 12px;
+  background:rgba(255,255,255,.02);border-radius:8px;line-height:1.7}
+footer{max-width:1400px;margin:0 auto;padding:20px 16px 30px;text-align:center;
+  font-size:.63rem;color:var(--muted);border-top:1px solid var(--border);line-height:2.4}
+footer a{color:var(--blue)}
+@media(max-width:768px){
+  .pgrid{grid-template-columns:1fr}
+  .cmp-tbl{min-width:540px}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <div class="logo">
+      <span class="logo-icon">🏦</span>
+      <div>
+        <div class="logo-title">HK Virtual Bank Promotions</div>
+        <div class="logo-sub">香港虛擬銀行優惠追蹤器 · 7 Banks · Real-time Filter</div>
+      </div>
+    </div>
+    <div class="hdr-chips">
+      <span class="chip chip-gold">📅 <span id="elDate">—</span></span>
+      <span class="chip chip-green">🎁 <span id="elValidCount">—</span> valid offers</span>
+    </div>
+  </div>
+</header>
+
+<div class="search-bar">
+  <div class="search-inner">
+    <input class="s-input" id="elSearch" type="text" placeholder="🔍  Search promotions... (e.g. cash reward, 0 fee, interest)" oninput="applyFilters()">
+    <label class="s-label">
+      <input type="checkbox" id="elValidOnly" onchange="applyFilters()"> Show valid only
+    </label>
+    <select class="s-select" id="elSort" onchange="applyFilters()">
+      <option value="default">Sort: Default</option>
+      <option value="bank">Sort: By Bank</option>
+      <option value="endDate">Sort: Ending Soon</option>
+      <option value="az">Sort: A–Z</option>
+    </select>
+  </div>
+</div>
+
+<div class="bank-tabs-wrap">
+  <div class="bank-tabs">
+    <button class="btab btab-all act" onclick="setBank('all',this)">🏦 All Banks <span class="btab-cnt" id="bc-all">0</span></button>
+    <button class="btab btab-za"      onclick="setBank('za',this)"><span class="bdot" style="background:var(--za)"></span>ZA Bank <span class="btab-cnt" id="bc-za">0</span></button>
+    <button class="btab btab-welab"   onclick="setBank('welab',this)"><span class="bdot" style="background:var(--welab)"></span>WeLab Bank <span class="btab-cnt" id="bc-welab">0</span></button>
+    <button class="btab btab-pao"     onclick="setBank('pao',this)"><span class="bdot" style="background:var(--pao)"></span>PAObank <span class="btab-cnt" id="bc-pao">0</span></button>
+    <button class="btab btab-livi"    onclick="setBank('livi',this)"><span class="bdot" style="background:var(--livi)"></span>livi bank <span class="btab-cnt" id="bc-livi">0</span></button>
+    <button class="btab btab-airstar" onclick="setBank('airstar',this)"><span class="bdot" style="background:var(--airstar)"></span>Airstar Bank <span class="btab-cnt" id="bc-airstar">0</span></button>
+    <button class="btab btab-fusion"  onclick="setBank('fusion',this)"><span class="bdot" style="background:var(--fusion)"></span>Fusion Bank <span class="btab-cnt" id="bc-fusion">0</span></button>
+    <button class="btab btab-mox"     onclick="setBank('mox',this)"><span class="bdot" style="background:var(--mox)"></span>Mox Bank <span class="btab-cnt" id="bc-mox">0</span></button>
+  </div>
+</div>
+
+<div class="type-wrap">
+  <div class="type-inner">
+    <div class="type-lbl">Filter by Promotion Type 優惠類別篩選</div>
+    <div class="type-tabs" id="elTypeTabs"></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="data-notice">
+    ⚠️ <strong>Fusion Bank:</strong> Promotion details unavailable from provided sources — cards show placeholder data.
+    <strong>Mox Bank</strong> is now fully populated from <a href="https://mox.com/promotions/" target="_blank" style="color:var(--blue)">mox.com/promotions</a> (14 real promotions).
+    All other 5 banks are fully populated from official sources (as at <strong>17 Mar 2026</strong>).
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-v" id="stTotal" style="color:var(--gold)">0</div><div class="stat-l">Total Offers</div></div>
+    <div class="stat"><div class="stat-v" id="stValid" style="color:var(--green)">0</div><div class="stat-l">Still Valid ✅</div></div>
+    <div class="stat"><div class="stat-v" id="stExpiring" style="color:var(--orange)">0</div><div class="stat-l">Expiring ≤30d ⚡</div></div>
+    <div class="stat"><div class="stat-v" id="stExpired" style="color:var(--red)">0</div><div class="stat-l">Expired ❌</div></div>
+    <div class="stat"><div class="stat-v" style="color:var(--blue)">7</div><div class="stat-l">Banks Covered</div></div>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><span class="ldot" style="background:var(--za)"></span>ZA Bank</div>
+    <div class="leg"><span class="ldot" style="background:var(--welab)"></span>WeLab Bank</div>
+    <div class="leg"><span class="ldot" style="background:var(--pao)"></span>PAObank</div>
+    <div class="leg"><span class="ldot" style="background:var(--livi)"></span>livi bank</div>
+    <div class="leg"><span class="ldot" style="background:var(--airstar)"></span>Airstar Bank</div>
+    <div class="leg"><span class="ldot" style="background:var(--fusion)"></span>Fusion Bank</div>
+    <div class="leg"><span class="ldot" style="background:var(--mox)"></span>Mox Bank</div>
+    <div class="leg-sep"></div>
+    <div class="leg"><span style="color:var(--green)">✅</span>&nbsp;Valid</div>
+    <div class="leg"><span style="color:var(--orange)">⚡</span>&nbsp;Expiring soon</div>
+    <div class="leg"><span style="color:var(--red)">❌</span>&nbsp;Expired</div>
+    <div class="leg"><span style="color:var(--gold)">🔄</span>&nbsp;Ongoing</div>
+  </div>
+
+  <div class="sh">
+    <span class="sh-title">🎁 Promotions</span>
+    <span class="badge b-gold" id="elPromoCount">0 offers</span>
+  </div>
+  <div class="pgrid" id="elGrid"></div>
+
+  <div class="divider"></div>
+
+  <div id="elCmpSection">
+    <div class="sh">
+      <span class="sh-title">📊 HK Virtual Banks — 全面比較分析</span>
+      <span class="badge b-blue" id="elCmpBadge">All Types</span>
+    </div>
+    <div class="cmp-desc" id="elCmpDesc"></div>
+    <div class="cmp-scroll"><table class="cmp-tbl" id="elCmpTbl"></table></div>
+    <div class="cmp-note" id="elCmpNote"></div>
+  </div>
+
+</div>
+
+<footer>
+  Data sourced from official bank websites · As at 17 March 2026 · For reference only · 僅供參考，不構成投資建議<br>
+  <a href="https://bank.za.group/en" target="_blank">ZA Bank</a> ·
+  <a href="https://www.welab.bank/" target="_blank">WeLab Bank</a> ·
+  <a href="https://www.paob.com.hk/tc/" target="_blank">PAObank</a> ·
+  <a href="https://www.livibank.com/" target="_blank">livi bank</a> ·
+  <a href="https://www.airstarbank.com/en-hk/promotion" target="_blank">Airstar Bank</a> ·
+  <a href="https://www.fusionbank.com/" target="_blank">Fusion Bank</a> ·
+  <a href="https://mox.com/promotions/" target="_blank">Mox Bank</a><br>
+  All promotions subject to T&amp;C · 所有優惠受條款及細則約束
+</footer>
+
+<button class="stt" id="elStt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+  try { init(); } catch(e) {
+    document.getElementById('elGrid').innerHTML =
+      '<div class="empty"><div class="empty-ico">⚠️</div><p>Error loading: ' + e.message + '</p></div>';
+    console.error('Init error:', e);
+  }
+});
+
+var TODAY_STR = '2026-03-17';
+var TODAY = new Date(TODAY_STR);
+var activeBank = 'all';
+var activeType = 'all';
+var searchQ = '';
+var showValidOnly = false;
+var sortBy = 'default';
+
+var TYPES = [
+  {id:'all',    label:'All 全部',         emoji:'🏦'},
+  {id:'迎新',   label:'迎新 Welcome',     emoji:'🎉'},
+  {id:'消費',   label:'消費 Spending',    emoji:'🛍️'},
+  {id:'投資',   label:'投資 Investment',  emoji:'📈'},
+  {id:'旅遊',   label:'旅遊 Travel',      emoji:'✈️'},
+  {id:'保險',   label:'保險 Insurance',   emoji:'🛡️'},
+  {id:'貸款',   label:'貸款 Loan',        emoji:'💳'},
+  {id:'活期存款',label:'活期存款 Savings', emoji:'🏦'},
+  {id:'信用卡', label:'信用卡 Card',      emoji:'💳'},
+  {id:'定期存款',label:'定期存款 TDeposit',emoji:'📅'},
+  {id:'外匯',   label:'外匯 FX',          emoji:'💱'},
+  {id:'推薦',   label:'推薦 Referral',    emoji:'👥'},
+  {id:'長期獎勵',label:'長期獎勵 Long-term',emoji:'⭐'},
+  {id:'新資金', label:'新資金 New Funds',  emoji:'💰'},
+  {id:'Others', label:'Others 其他',      emoji:'🔖'}
+];
+
+var PROMOS = [
+
+  // ── ZA BANK (14) ──────────────────────────────────────────────────────────
+  {id:'za01', bank:'za', bName:'ZA Bank',
+   name:'StockBack x ZA Card — Spend to Earn Stocks',
+   types:['消費','投資','長期獎勵'],
+   pStart:'2025-11-03', pEnd:'2026-06-30', pDisp:'3 Nov 2025 – 30 Jun 2026',
+   hl:'🥇 Earn REAL stocks (1%) from every HKD 10+ spend',
+   summary:'Every eligible HKD 10+ ZA Card transaction earns 1 StockBack Chance (valid 48h). Choose from 6 stocks; reward = 1% of transaction amount. Higher rebates possible in limited-time promos.',
+   quota:'Unlimited; 1 StockBack chance per qualifying transaction',
+   cost:'Free (via ZA Card spending, min HKD 10)',
+   tc:'https://bank.za.group/en',
+   note:'Must hold valid investment account and activate within 90 days of selecting reward.'},
+
+  {id:'za02', bank:'za', bName:'ZA Bank',
+   name:'Millionaire PowerDraw — Win HKD 1 Million',
+   types:['消費','長期獎勵'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (each round)',
+   hl:'🏆 HKD 1M prize pool + up to 200% spending rebate',
+   summary:'Each HKD 10+ ZA Card transaction gives 1 PowerDraw Chance (valid 48h). Win up to 200% rebate per transaction (capped HKD 10,000). Get MillionTix to share HKD 1M pool — 100 winners of HKD 10,000 per round.',
+   quota:'100 MillionTix winners drawn per round',
+   cost:'Free (via ZA Card spending, min HKD 10)',
+   tc:'https://bank.za.group/en',
+   note:'Rebate as ZA Coin. Capped at 1,000,000 ZA Coin (HKD 10,000) per transaction.'},
+
+  {id:'za03', bank:'za', bName:'ZA Bank',
+   name:'0% Fund Subscription Fee on ALL Funds',
+   types:['投資','新資金'],
+   pStart:null, pEnd:'2026-03-31', pDisp:'Until 31 Mar 2026',
+   hl:'💰 0% subscription fee on ALL funds, no cap + redemption fee waived',
+   summary:'Individual investment fund users enjoy 0% subscription fee on ALL funds with no cap, plus redemption fee waivers. 100% of your money goes into the market with zero entry drag.',
+   quota:'All individual ZA Bank investment fund users',
+   cost:'Free (0% subscription, 0% redemption fee)',
+   tc:'https://bank.za.group/en',
+   note:'Expires 31 Mar 2026. Investment involves risk. Please read fund offering documents.'},
+
+  {id:'za04', bank:'za', bName:'ZA Bank',
+   name:'Crypto Trading — Zero Platform Fee (First 90 Days)',
+   types:['投資'],
+   pStart:'2026-02-01', pEnd:'2026-06-30', pDisp:'1 Feb – 30 Jun 2026',
+   hl:'⚡ $0 crypto platform fee for 90 days after activation, no cap',
+   summary:'New crypto customers who activate crypto trading enjoy $0 platform fee for the first 90 days. Trade BTC, ETH and more 24x7 with HKD or USD. No cap on trading volume during the fee-free period.',
+   quota:'New crypto customers; valid for 90 days from activation date',
+   cost:'Free for first 90 days; normal platform fees apply after',
+   tc:'https://bank.za.group/en',
+   note:'Crypto prices highly volatile. 90-day period starts from service activation date.'},
+
+  {id:'za05', bank:'za', bName:'ZA Bank',
+   name:'Stock PowerDraw — Get Free Top-100 US Stocks',
+   types:['投資'],
+   pStart:'2026-02-01', pEnd:'2026-06-30', pDisp:'1 Feb – 30 Jun 2026',
+   hl:'🎰 Buy stocks and win free top-100 US stocks',
+   summary:'Complete a qualifying stock purchase (min USD 2 / HKD 20 platform fee) to receive 1 Stock PowerDraw Chance (valid 24h). Win Designated Stock Redemption Coupons redeemable for top-100 US stocks by market cap.',
+   quota:'1 chance per qualifying purchase; valid 24 hours each',
+   cost:'Min platform fee: USD 2 (US stocks) / HKD 20 (HK stocks)',
+   tc:'https://bank.za.group/en',
+   note:'ZA Bank App version 3.8.9 or above required. Investment involves risk.'},
+
+  {id:'za06', bank:'za', bName:'ZA Bank',
+   name:'SWIFT Global Transfer — Zero ZA Bank Fee',
+   types:['外匯'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'🌍 0 fee SWIFT to 140+ countries; real-time Mainland transfers free',
+   summary:'Transfer to 140+ countries via SWIFT with zero ZA Bank handling fee. Payment Connect: HK to Mainland real-time, zero fee. Wise express remittance (HKD). Hold 11 currencies (HKD, CNY, USD, GBP, EUR, JPY, AUD, CAD, SGD, NZD, CHF).',
+   quota:'No limit stated',
+   cost:'ZA Bank fee: Free. Third-party/correspondent bank fees may apply.',
+   tc:'https://bank.za.group/en',
+   note:'Third-party intermediary bank fees may still apply for SWIFT transfers.'},
+
+  {id:'za07', bank:'za', bName:'ZA Bank',
+   name:'Instalment Loan — APR from 1.30%',
+   types:['貸款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'💳 APR from 1.30%, up to HKD 1,000,000, approved in 90 seconds',
+   summary:'Personal instalment loan up to HKD 1,000,000. APR as low as 1.30% (HKD 1M, 12-month example). Preliminary approval in as fast as 90s (new customers) or 30s (existing). Also: Card Statement Instalment, Debt Consolidation, Salary FastPass.',
+   quota:'Subject to credit assessment',
+   cost:'APR from 1.30% (HKD 1M, 12 months, 0.0584% monthly flat rate)',
+   tc:'https://bank.za.group/en',
+   note:'Final rate and amount vary by individual credit assessment. Borrow only if you can repay.'},
+
+  {id:'za08', bank:'za', bName:'ZA Bank',
+   name:'Travel with ZA Card — Free ATM + 11-Currency Wallet',
+   types:['旅遊'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'✈️ Free HK ATM withdrawals at 3,000+ ATMs + 11-currency wallet',
+   summary:'Free cash withdrawals at 3,000+ Visa ATMs across Hong Kong. Multi-currency savings in 11 currencies. Exchange currencies 24x7 at preferred rates. Exclusive travel perks and partner offers for ZA Card holders.',
+   quota:'All ZA Card holders',
+   cost:'Free (HK ATM). Overseas ATM may incur fees.',
+   tc:'https://bank.za.group/en',
+   note:'Overseas ATM cash withdrawals may incur handling fees from overseas networks.'},
+
+  {id:'za09', bank:'za', bName:'ZA Bank',
+   name:'Buy 1 Get 1 Free — Coffee, Tea and Dessert',
+   types:['消費'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (selected merchants)',
+   hl:'☕ BOGO deals at F&B merchants across Hong Kong',
+   summary:'ZA Card holders enjoy Buy 1 Get 1 Free deals at participating coffee, tea and dessert merchants in Hong Kong. New merchant partnerships added regularly. Check the ZA Bank app for the latest merchant list.',
+   quota:'Subject to individual merchant terms and availability',
+   cost:'Free (via ZA Card purchase)',
+   tc:'https://bank.za.group/en',
+   note:'Check ZA Bank app Offers section for current participating merchants.'},
+
+  {id:'za10', bank:'za', bName:'ZA Bank',
+   name:'Refer-to-Open and Refer-to-Loan Rewards',
+   types:['推薦'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'👥 Cash/ZA Coin rewards for both referrer and referee',
+   summary:'Refer friends to open a ZA Bank account or take out a loan. Both referrer and referee earn rewards (cash or ZA Coins). Access referral code in the ZA Bank app under the Refer section.',
+   quota:'Not capped (individual referral limits may apply)',
+   cost:'Free — rewards earned on successful referral completion',
+   tc:'https://bank.za.group/en',
+   note:'Reward amounts vary by campaign period. Check ZA Bank app for current rates.'},
+
+  {id:'za11', bank:'za', bName:'ZA Bank',
+   name:'Spring Eminence Reward — Invest and Earn Cash',
+   types:['投資','新資金'],
+   pStart:null, pEnd:null, pDisp:'Selected customers — check app',
+   hl:'🌸 Targeted invest-and-earn cash reward for selected customers',
+   summary:'Exclusive investment campaign for selected ZA Bank customers. Invest in eligible products and earn cash rewards. Targeted offer — check the ZA Bank app Offers section for your eligibility.',
+   quota:'Selected customers only',
+   cost:'Varies by investment product and amount',
+   tc:'https://bank.za.group/en',
+   note:'Targeted promotion. Investment involves risk. Check app for eligibility.'},
+
+  {id:'za12', bank:'za', bName:'ZA Bank',
+   name:'ZA Savings Go — Flexible High-Interest Savings',
+   types:['活期存款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (permanent feature)',
+   hl:'🏦 Flexible high-interest savings pot, zero fees, zero min deposit',
+   summary:'ZA Savings Go is a dedicated high-interest savings pot. Deposit and withdraw anytime with zero fees. Zero deposit requirement to open. Available 24x7. Covered by HK Deposit Protection Scheme up to HKD 800,000.',
+   quota:'All ZA Bank personal account holders',
+   cost:'Free — no account fees, no minimum balance',
+   tc:'https://bank.za.group/en',
+   note:'Interest rate subject to change. Deposits protected under HKDPB up to HKD 800K.'},
+
+  {id:'za13', bank:'za', bName:'ZA Bank',
+   name:'Insurance — Life, CI and VHIS in 3 Minutes',
+   types:['保險'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'⏱️ Get insured in 3 minutes — life, critical illness, VHIS via app',
+   summary:'Apply for life insurance, critical illness insurance, VHIS and more via ZA Bank app in as fast as 3 minutes. Fully digital process including claims. One-stop insurance via ZA Insure (ZA Life Ltd).',
+   quota:'Not specified; subject to underwriting',
+   cost:'Premium varies by product and coverage level',
+   tc:'https://bank.za.group/en',
+   note:'Insurance products by ZA Insure (ZA Life Ltd), not bank deposits. Subject to underwriting.'},
+
+  {id:'za14', bank:'za', bName:'ZA Bank',
+   name:'Custom ZA Card — Choose Your Last 6 Digits',
+   types:['消費','長期獎勵'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (permanent feature)',
+   hl:'🎨 First in HK: choose your own card number + no annual/hidden fees',
+   summary:"Hong Kong's first bank allowing you to choose the last 6 digits on your Visa debit card face. No annual fee, no hidden fees. Supports Apple Pay and Google Pay. Earns StockBack and PowerDraw chances on every qualifying spend.",
+   quota:'All ZA Bank account holders',
+   cost:'Free — no annual fee, no card issuance fee',
+   tc:'https://bank.za.group/en',
+   note:'Custom number subject to availability. This is a Visa debit card (not a credit card).'},
+
+  // ── WELAB BANK (7) ────────────────────────────────────────────────────────
+  {id:'wb01', bank:'welab', bName:'WeLab Bank',
+   name:'New Customer Welcome Pack — 20% p.a. + up to HKD 6,200',
+   types:['迎新','活期存款','新資金'],
+   pStart:null, pEnd:'2026-03-31', pDisp:'Until 31 Mar 2026',
+   hl:'🚀 20% p.a. interest + up to HKD 6,200 cash for new customers',
+   summary:'New customers using a designated referral code to open a Core Account enjoy 20% p.a. high-interest rate and up to HKD 6,200 in cash rewards. Referral codes via: WeCom official account (keyword new), friend referral (prefix FP), or designated channels. Codes starting TE/TR/TW excluded.',
+   quota:'Limited quota, first come first served',
+   cost:'Free — requires valid designated referral code',
+   tc:'https://www.welab.bank/en/feature/mcv-welcome-offer/',
+   note:'Codes starting TE, TR, TW are NOT applicable. T&C apply. Limited quota.'},
+
+  {id:'wb02', bank:'welab', bName:'WeLab Bank',
+   name:'Buddy Booster — Referral Reward up to HKD 6,000',
+   types:['推薦'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'👫 Earn up to HKD 6,000 cash by inviting friends',
+   summary:'Invite friends to open a WeLab Bank Core Account and complete simple missions. Earn up to HKD 6,000 in cash rewards as the referrer. Both parties benefit from the program.',
+   quota:'Not specified; check WeLab Bank app',
+   cost:'Free — reward earned on successful referral + mission completion',
+   tc:'https://www.welab.bank/en/feature/mcv-welcome-offer/',
+   note:'Referred friend must complete required missions to qualify for referrer reward.'},
+
+  {id:'wb03', bank:'welab', bName:'WeLab Bank',
+   name:'WeLab Global Wallet Debit Card — Welcome Rewards + Best Rate FX',
+   types:['迎新','消費','外匯'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'💳 Best FX Rate Guaranteed + welcome rewards for new cardholders',
+   summary:'New WeLab Global Wallet Debit Card holders receive exclusive welcome rewards. Best Rate Guaranteed for foreign exchange. Year-round spending offers available for cardholders.',
+   quota:'New cardholders',
+   cost:'Free — no card fee stated',
+   tc:'https://www.welab.bank/',
+   note:'Best Rate Guaranteed subject to T&C. Check WeLab Bank app for current FX rates.'},
+
+  {id:'wb04', bank:'welab', bName:'WeLab Bank',
+   name:'GoSave 2.0 Time Deposit',
+   types:['定期存款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'📈 Competitive time deposit via GoSave 2.0 — fully digital',
+   summary:'Competitive time deposit rates via WeLab Bank GoSave 2.0. Apply digitally in minutes. Various tenors available. HKMA-authorised digital bank covered by Deposit Protection Scheme (HKD 800,000).',
+   quota:'All WeLab Bank account holders',
+   cost:'Varies by deposit amount and tenor',
+   tc:'https://www.welab.bank/',
+   note:'Rates subject to change. Protected under HK Deposit Protection Scheme up to HKD 800K.'},
+
+  {id:'wb05', bank:'welab', bName:'WeLab Bank',
+   name:'Personal Loan Offers — Tesla, Apple, Tax Season',
+   types:['貸款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (various campaigns)',
+   hl:'🚗 Exclusive: Tesla car loan + Apple Subscribe+ + Tax Season rates',
+   summary:'Multiple personal loan offers: general Personal Instalment Loan, Card Debt Consolidation Loan, Subscribe+ for Apple Products, Preface Learn Now Pay Later, Tesla Personal Loan Offer, and Tax Season Loan Offer.',
+   quota:'Subject to credit assessment',
+   cost:'Varies by loan type, amount and tenor',
+   tc:'https://www.welab.bank/',
+   note:'To borrow or not to borrow? Borrow only if you can repay. T&C apply.'},
+
+  {id:'wb06', bank:'welab', bName:'WeLab Bank',
+   name:'R-Friend Referral Loan Campaign',
+   types:['推薦','貸款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'💰 Earn cash rewards for successfully referring loan customers',
+   summary:'Personal Loan R-Friend Referral Campaign. Refer friends to apply for a WeLab personal loan and earn cash rewards for each successful referral. Simple application process for both referrer and referee.',
+   quota:'Not specified',
+   cost:'Free — reward on successful referred loan disbursement',
+   tc:'https://www.welab.bank/',
+   note:'Referred customer must meet credit criteria and loan must be disbursed to qualify.'},
+
+  {id:'wb07', bank:'welab', bName:'WeLab Bank',
+   name:'WeLab Money Plus — Digital Wealth Advisory',
+   types:['投資'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'📊 Digital wealth advisory + featured funds investment via app',
+   summary:'WeLab Money Plus digital wealth advisory and featured funds investment service. Diversified portfolio construction via the WeLab Bank app. HKMA-authorised digital bank.',
+   quota:'All WeLab Bank account holders',
+   cost:'Varies by product; check WeLab Bank app',
+   tc:'https://www.welab.bank/',
+   note:'Investment involves risk. Not reviewed by SFC. Please read offering documents carefully.'},
+
+  // ── PAO BANK (3) ──────────────────────────────────────────────────────────
+  {id:'pb01', bank:'pao', bName:'PAObank',
+   name:'Personal Savings — No Minimum Balance, No Fees',
+   types:['活期存款','迎新'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (permanent feature)',
+   hl:'🏦 Zero minimum, zero fees, zero hidden charges — always',
+   summary:'PAObank personal savings account has NO minimum balance requirement, NO account management fee, and NO hidden charges. Remote account opening via mobile: scan HKID, take selfie, submit personal info. Covered by HK Deposit Protection Scheme.',
+   quota:'All personal account applicants',
+   cost:'Completely free',
+   tc:'https://www.paob.com.hk/tc/',
+   note:'Regulated by HKMA. Covered by Deposit Protection Scheme. Physical office in HK.'},
+
+  {id:'pb02', bank:'pao', bName:'PAObank',
+   name:'SME Digital Banking — Fast Account and Loan',
+   types:['迎新','貸款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'🏢 Fast SME account opening + streamlined trade loan approval',
+   summary:'SME customers in selected trades can open business accounts quickly and access simple loan approvals via mobile or PC. Designed to help SMEs access funds fast. All banking services handled digitally.',
+   quota:'Selected trade SMEs',
+   cost:'Varies by loan amount and terms',
+   tc:'https://www.paob.com.hk/tc/',
+   note:'SME loan eligibility subject to PAObank assessment. Selected trades only.'},
+
+  {id:'pb03', bank:'pao', bName:'PAObank',
+   name:'7x24 All-Self-Service Digital Banking',
+   types:['長期獎勵','活期存款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (permanent)',
+   hl:'🕐 24/7 banking — no queues, no branches, fully secure',
+   summary:'24/7 fully digital self-service banking including FPS transfers, deposits and withdrawals. No queuing, no branch visits needed. Strict security: login authentication and auto device safety detection. Deposit Protection Scheme member.',
+   quota:'All PAObank customers',
+   cost:'Free',
+   tc:'https://www.paob.com.hk/tc/',
+   note:'PAObank has a physical office in HK despite being a virtual bank.'},
+
+  // ── LIVI BANK (7) ─────────────────────────────────────────────────────────
+  {id:'lv01', bank:'livi', bName:'livi bank',
+   name:'liviSave — Preferential Savings Rate, No Fees',
+   types:['活期存款','新資金','迎新'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'💚 Preferential rate, zero fees, zero minimum — open in minutes',
+   summary:'Open a liviSave account online in minutes — 100% digital, no complicated documents. Earn a preferential savings rate with NO fees and NO minimum deposit. Deposit and withdraw freely. Anytime, anywhere via the livi app.',
+   quota:'All livi bank personal account applicants',
+   cost:'Completely free',
+   tc:'https://www.livibank.com/',
+   note:'Preferential savings rate subject to change. T&C apply.'},
+
+  {id:'lv02', bank:'livi', bName:'livi bank',
+   name:'Money Safe Rewards — Anti-Fraud Savings Protection',
+   types:['活期存款','長期獎勵'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'🔒 Earn rewards + HKMA anti-fraud protection for your savings',
+   summary:'Activate Money Safe on livi bank to earn exclusive rewards while protecting savings. Earn the same savings/time deposit interest rates while locked. Funds unlocked only with in-person appointment — maximum security.',
+   quota:'All livi bank account holders; any deposit amount qualifies',
+   cost:'Free — requires any deposit into Money Safe',
+   tc:'https://www.livibank.com/',
+   note:'In-person appointment required to unlock Money Safe funds. HKMA-endorsed anti-fraud feature.'},
+
+  {id:'lv03', bank:'livi', bName:'livi bank',
+   name:'livi Rewards with BOC Cards',
+   types:['消費','長期獎勵','信用卡'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'🎁 livi Rewards linked with BOC Chill Card and BOC Mastercard Debit',
+   summary:'livi Rewards Program offers everyday banking rewards linked with BOC Chill Card and BOC Mastercard Debit Card for expanded rewards earning. Accumulate rewards through spending and banking activities.',
+   quota:'All livi bank account holders',
+   cost:'Free — earn through everyday banking',
+   tc:'https://www.livibank.com/',
+   note:'BOC card products available through livi bank ecosystem.'},
+
+  {id:'lv04', bank:'livi', bName:'livi bank',
+   name:'livi Flexi Loan — Personal Loan and Balance Transfer',
+   types:['貸款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'📱 Flexible personal loan + balance transfer — fully digital',
+   summary:'livi Flexi Loan offers both personal loan and balance transfer solutions via fully digital application. Responsible borrowing principles applied. Apply via livi bank app anytime.',
+   quota:'Subject to credit assessment',
+   cost:'Varies by loan type, amount and tenor',
+   tc:'https://www.livibank.com/',
+   note:'To borrow or not to borrow? Borrow only if you can repay. T&C apply.'},
+
+  {id:'lv05', bank:'livi', bName:'livi bank',
+   name:'Universal Voyage Travel Insurance Plan',
+   types:['旅遊','保險'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'✈️ Digital travel insurance — apply and claim via livi app',
+   summary:'Comprehensive travel insurance digitally available through the livi bank app. Universal Voyage Travel Insurance Plan covers travel protection needs. Digital application and claims process.',
+   quota:'Not specified',
+   cost:'Premium varies by coverage and destination',
+   tc:'https://www.livibank.com/',
+   note:'Please review product terms before purchase. Subject to underwriting approval.'},
+
+  {id:'lv06', bank:'livi', bName:'livi bank',
+   name:'QR Cash, QR Payment and Free FPS Transfers',
+   types:['消費','長期獎勵'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (permanent feature)',
+   hl:'📲 QR pay at merchants HK-wide + free instant FPS transfers',
+   summary:'Fast and secure QR Payment accepted by merchants all across Hong Kong. QR Cash service available. FPS instant transfers free to anyone at any time.',
+   quota:'All livi bank account holders',
+   cost:'Free',
+   tc:'https://www.livibank.com/',
+   note:'QR Payment availability subject to participating merchants.'},
+
+  {id:'lv07', bank:'livi', bName:'livi bank',
+   name:'livi Business — SME Financing and Business Account',
+   types:['貸款','迎新'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'🏢 SME financing + business account — fully digital for HK SMEs',
+   summary:'livi Business offers SME financing solutions and dedicated business banking accounts. Designed for small and medium enterprises in Hong Kong. Digital account opening and financing application.',
+   quota:'SME businesses in HK',
+   cost:'Varies by financing needs',
+   tc:'https://www.livibank.com/',
+   note:'Subject to livi bank SME business assessment and approval.'},
+
+  // ── AIRSTAR BANK (3) ──────────────────────────────────────────────────────
+  {id:'ab01', bank:'airstar', bName:'Airstar Bank',
+   name:'First Mainland Remittance — 0 Fee, Receive in 1 Hour',
+   types:['外匯','迎新'],
+   pStart:null, pEnd:null, pDisp:'During promotion period (limited quota)',
+   hl:'🇨🇳 0 handling fee on first mainland transfer — receive in 1 hour',
+   summary:'Log in to Airstar Bank App and use Remit to Chinese Mainland WeRemit to enjoy 0 handling fee on your FIRST transfer to Chinese Mainland. Funds arrive in as fast as 1 hour. One-time offer per customer. Limited quota, first come first served.',
+   quota:'ONE time per customer; limited quota; first come first served',
+   cost:'Free for first transfer (normal fees apply thereafter)',
+   tc:'https://www.airstarbank.com/en-hk/promotion',
+   note:'One-time offer per customer. Limited quota. Normal fees apply after first transfer.'},
+
+  {id:'ab02', bank:'airstar', bName:'Airstar Bank',
+   name:'Activate Money Safe — Get HKD 30 Pacific Coffee Voucher',
+   types:['活期存款','長期獎勵'],
+   pStart:null, pEnd:null, pDisp:'During promotion period (limited quota)',
+   hl:'☕ HKD 30 Pacific Coffee e-voucher + HKMA anti-fraud savings lock',
+   summary:'Deposit ANY amount into a Money Safe account and receive a HKD 30 Pacific Coffee e-Cash Voucher. HKMA-introduced anti-fraud feature: funds locked, unlocked only with in-person appointment. Earn same savings/time deposit interest rates while locked.',
+   quota:'Limited quota, first come first served; any deposit amount qualifies',
+   cost:'Free — deposit any amount to qualify',
+   tc:'https://www.airstarbank.com/en-hk/promotion',
+   note:'Funds locked; in-person appointment required to unlock. Same interest rates apply.'},
+
+  {id:'ab03', bank:'airstar', bName:'Airstar Bank',
+   name:'Visa Card Air Ticket Cash Rebate — Up to HKD 800',
+   types:['旅遊','消費','信用卡'],
+   pStart:null, pEnd:null, pDisp:'Varies by airline (promotion period)',
+   hl:'✈️ Up to HKD 800 rebate on flights with 5 major airlines',
+   summary:'Use registered eligible Airstar Visa Card to pay for air tickets with Air New Zealand, ANA, Ethiopian Airlines, EVA AIR, or Singapore Airlines via their official HK/Macau websites. Min HKD 8,000 single transaction gets HKD 800 rebate; HKD 4,000-7,999 gets HKD 240 rebate. Once per eligible cardholder.',
+   quota:'Maximum once per eligible Visa cardholder',
+   cost:'Min spend HKD 4,000 for HKD 240 rebate; HKD 8,000 for HKD 800 rebate',
+   tc:'https://www.airstarbank.com/en-hk/promotion',
+   note:'Airlines: Air New Zealand, ANA, Ethiopian Airlines, EVA AIR, Singapore Airlines. Periods vary by airline.'},
+
+  // ── FUSION BANK (2 placeholders) ──────────────────────────────────────────
+  {id:'fb01', bank:'fusion', bName:'Fusion Bank',
+   name:'Fusion Bank — Current Promotions (Data Pending)',
+   types:['Others'],
+   pStart:null, pEnd:null, pDisp:'Check official website',
+   hl:'🌐 Visit fusionbank.com for latest Fusion Bank promotions',
+   summary:'Detailed promotion data from Fusion Bank was not available. Fusion Bank is a virtual bank regulated by HKMA. Please visit the official website or paste the 優惠專區 page content to update.',
+   quota:'Please check official website',
+   cost:'Please check official website',
+   tc:'https://www.fusionbank.com/?lang=zh-HK',
+   note:'Visit https://www.fusionbank.com/?lang=zh-HK (優惠專區) for latest promotions.'},
+
+  {id:'fb02', bank:'fusion', bName:'Fusion Bank',
+   name:'Fusion Bank SME and Personal Banking Services',
+   types:['Others','迎新'],
+   pStart:null, pEnd:null, pDisp:'Check official website',
+   hl:'🏢 Fusion Bank offers personal and SME banking services',
+   summary:'Fusion Bank provides personal and business banking services as an HKMA-licensed virtual bank. Specific promotion details require the official website content (優惠專區) to be provided.',
+   quota:'Check official website',
+   cost:'Check official website',
+   tc:'https://www.fusionbank.com/?lang=zh-HK',
+   note:'Please paste Fusion Bank 優惠專區 content to get accurate data here.'},
+
+  // ── MOX BANK (14 — real data from mox.com/promotions) ────────────────────
+  {id:'mb01', bank:'mox', bName:'Mox Bank',
+   name:'Tax Season Instant Loan — APR as Low as 1.18%',
+   types:['貸款'],
+   pStart:null, pEnd:'2026-04-30', pDisp:'Until 30 Apr 2026',
+   hl:'💳 APR as low as 1.18% + earn up to HKD 10,888 cash reward',
+   summary:'Tax Season Instant Loan with APR slashed to as low as 1.18% — the lowest stated APR among all HK virtual banks. Personalised quotation to instant disbursement entirely via the Mox app. Earn up to HKD 10,888 cash reward for successful application of designated Instant Loans.',
+   quota:'Subject to credit assessment; until 30 Apr 2026',
+   cost:'APR from 1.18% (tax season special rate)',
+   tc:'https://mox.com/promotions/',
+   note:'From now until 30 Apr 2026. To borrow or not to borrow? Borrow only if you can repay. T&C apply.'},
+
+  {id:'mb02', bank:'mox', bName:'Mox Bank',
+   name:'Welcome "1500MOX" — Up to HKD 1,500 Cash + 2% Unlimited CashBack',
+   types:['迎新','消費'],
+   pStart:null, pEnd:'2026-04-24', pDisp:'Until 24 Apr 2026',
+   hl:'🎉 HKD 1,500 cash + 2% Unlimited CashBack — no balance requirement',
+   summary:'New customers use invitation code "1500MOX" to open a Mox account and apply for Mox Credit Card. Earn up to HKD 1,500 cash rewards by spending at any merchant in Hong Kong. For a limited time, unlock 2% Unlimited CashBack or HKD 4=1 mile with no balance requirement. Start earning on every daily spend, everywhere.',
+   quota:'New customers only; until 24 Apr 2026',
+   cost:'Free — use code 1500MOX; spending requirements apply',
+   tc:'https://mox.com/promotions/',
+   note:'"1500MOX" Invitation Code Promotion T&C apply. To borrow or not to borrow? Borrow only if you can repay.'},
+
+  {id:'mb03', bank:'mox', bName:'Mox Bank',
+   name:'MOXSMART — 20% CashBack at 5 Hot Merchants + 12% p.a. Savings',
+   types:['迎新','消費','活期存款','新資金'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (check app for current period)',
+   hl:'🛍️ 20% CashBack at HKTVmall/foodpanda/Uber/Keeta/Taobao + 12% p.a.',
+   summary:'New customers enter code "MOXSMART" to enjoy 20% CashBack for a full year at 5 hot merchants: HKTVmall, foodpanda, Uber, Keeta, and Taobao. Plus standard up to 2% Unlimited CashBack everywhere. Also earn total welcome savings rate of 12% p.a. on deposits — making every day more rewarding.',
+   quota:'New customers only; code required at sign-up',
+   cost:'Free — use code MOXSMART at account opening',
+   tc:'https://mox.com/promotions/',
+   note:'MOXSMART Invitation Code Promotion T&C apply. To borrow or not to borrow? Borrow only if you can repay.'},
+
+  {id:'mb04', bank:'mox', bName:'Mox Bank',
+   name:'Mission Bonus Rate — Up to 3.5% p.a. on HKD/USD Savings',
+   types:['活期存款','新資金','長期獎勵'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (monthly missions)',
+   hl:'🚀 Stack up to 3.5% p.a. by completing 4 missions — kicks in instantly',
+   summary:'Complete 4 easy monthly missions (route payroll, invest, FX, or boost daily balance) to earn up to 3.5% p.a. bonus rate on HKD or USD eligible savings deposits. Bonus kicks in instantly and lasts till end of the month. Stack any or all — each mission adds to your rate.',
+   quota:'All Mox account holders',
+   cost:'Free — complete missions to unlock rate',
+   tc:'https://mox.com/promotions/',
+   note:'Bonus rate refreshes monthly based on mission completion. Rate stacks with each completed mission.'},
+
+  {id:'mb05', bank:'mox', bName:'Mox Bank',
+   name:'Scratch to Win — 5 Investment Missions = Up to HKD 8,888',
+   types:['投資','長期獎勵'],
+   pStart:'2026-03-16', pEnd:'2026-06-15', pDisp:'16 Mar – 15 Jun 2026',
+   hl:'🥳 Complete 5 investment challenges, scratch to win HKD 8,888',
+   summary:'During the promotional period (16 Mar – 15 Jun 2026), complete any of 5 investment challenges to earn a Mox Scratch Card. Scratch and reveal your prize instantly. Top prize: HKD 8,888 (HKD 8,000 Solana (SOL) + HKD 888 cash reward). Complete more missions to multiply your chances. Limited quota, first-come first-served.',
+   quota:'Limited quota, first-come first-served',
+   cost:'Min investment activity per mission to qualify',
+   tc:'https://mox.com/promotions/',
+   note:'Investment involves risks. 16 Mar – 15 Jun 2026. Mox Invest T&C and Mox Journey from Scratch Promotion T&C apply.'},
+
+  {id:'mb06', bank:'mox', bName:'Mox Bank',
+   name:'Mox Credit Card — 2% Unlimited CashBack + 3% at Supermarkets',
+   types:['消費','信用卡','長期獎勵'],
+   pStart:null, pEnd:null, pDisp:'Ongoing (permanent feature)',
+   hl:'💳 2% Unlimited CashBack everywhere + 3% at HK supermarkets — daily',
+   summary:'Earn 2% Unlimited CashBack on ALL spending everywhere with Mox Credit Card. Earn 3% Unlimited CashBack at supermarkets in Hong Kong. All CashBack is in real cash, calculated instantly and credited to your Mox Account daily. Switch between CashBack and Asia Miles (HKD 4 = 1 mile, 0% FX fees) anytime — no limits.',
+   quota:'All Mox Credit Card holders',
+   cost:'Free — no annual fee',
+   tc:'https://mox.com/promotions/',
+   note:'Can switch between CashBack and Asia Miles mode. 0% FX fees on all Mox Credit Card transactions. This is a CREDIT card (unique among HK virtual banks).'},
+
+  {id:'mb07', bank:'mox', bName:'Mox Bank',
+   name:'Asia Miles Time Deposit — Earn Miles While Saving',
+   types:['定期存款','旅遊'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'✈️ Earn Asia Miles on Time Deposits — HKD 104K / 12M = 26,000 miles',
+   summary:'Set up a Mox Time Deposit and earn Asia Miles. Example: HKD 104,000 new fund for 12 months earns 26,000 Asia Miles — enough for a round-trip flight to Tokyo, Osaka or further destinations. Perfect for savers who are also frequent flyers.',
+   quota:'All Mox account holders',
+   cost:'Min HKD 104,000 for 26,000 Asia Miles example (12-month tenor)',
+   tc:'https://mox.com/promotions/',
+   note:'Miles rate subject to change. Only Mox offers Asia Miles earned directly from Time Deposits among HK virtual banks.'},
+
+  {id:'mb08', bank:'mox', bName:'Mox Bank',
+   name:'FlexiBoost — Progressive Rate Savings (Rate Locked)',
+   types:['活期存款','定期存款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'💰 FlexiBoost: locked-in rate + progressively higher interest',
+   summary:'FlexiBoost is a new savings solution offering progressively higher interest rates the longer you hold. Your rate is locked regardless of market movements — confidence that your interest will not fall. Watch wealth grow as you earn higher rates over time.',
+   quota:'All Mox account holders',
+   cost:'Varies by deposit amount',
+   tc:'https://mox.com/promotions/',
+   note:'Promotion T&C apply. Rate locked for the duration of FlexiBoost period. FlexiBoost Lucky Draw previously run — check current promotions.'},
+
+  {id:'mb09', bank:'mox', bName:'Mox Bank',
+   name:'Travel Pick & Go Insurance — Free Easter Add-on Coverage',
+   types:['旅遊','保險'],
+   pStart:'2026-03-04', pEnd:'2026-04-30', pDisp:'4 Mar – 30 Apr 2026',
+   hl:'✈️🆓 FREE add-on coverage with Travel Pick & Go — Easter special',
+   summary:'From 4 March to 30 April 2026, apply for Travel Pick & Go travel insurance and receive 1 FREE add-on coverage (Eggstra Care+ promotion). Designed to safeguard trips from the financial stress that unexpected events can bring.',
+   quota:'Promotion period 4 Mar – 30 Apr 2026',
+   cost:'Travel insurance premium applies; add-on coverage is free',
+   tc:'https://mox.com/promotions/',
+   note:'Travel Pick & Go Eggstra Care+ promotion (March–April 2026) T&C apply.'},
+
+  {id:'mb10', bank:'mox', bName:'Mox Bank',
+   name:'Trip.com Exclusive — Up to 8% Off + 2% CashBack All Year',
+   types:['旅遊','消費','信用卡'],
+   pStart:null, pEnd:'2026-12-31', pDisp:'Until 31 Dec 2026',
+   hl:'✈️ Up to 8% off hotels/flights on Trip.com + 2% CashBack',
+   summary:'Use Mox Credit Card to book hotels or flights on Trip.com and enjoy up to 8% exclusive discounts. Plus earn up to 2% Unlimited CashBack on Mox Credit Card spending. Full year of savings — travel more and earn more until 31 Dec 2026.',
+   quota:'All Mox Credit Card holders; until 31 Dec 2026',
+   cost:'Book via Trip.com with Mox Credit Card',
+   tc:'https://mox.com/promotions/',
+   note:'Up to 8% discount applies on Trip.com. Plus up to 2% CashBack on Mox Credit Card. Terms apply.'},
+
+  {id:'mb11', bank:'mox', bName:'Mox Bank',
+   name:'Payroll Switch — 1.5% p.a. Bonus + Unlimited 2% CashBack',
+   types:['活期存款','消費','長期獎勵'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'💸 Switch payroll to Mox: 1.5% p.a. bonus rate + 2% CashBack monthly',
+   summary:'Switch your payroll to Mox to unlock 1.5% p.a. bonus rate on HKD/USD Savings Account plus Unlimited 2% CashBack or HKD 4=1 Asia Miles on Mox Credit Card. One simple switch — gains delivered month after month.',
+   quota:'All Mox account holders who switch payroll',
+   cost:'Free — switch payroll to qualify',
+   tc:'https://mox.com/promotions/',
+   note:'Bonus rate applies upon successful payroll switch. 2% CashBack on Mox Credit Card (no balance requirement for CashBack after switch).'},
+
+  {id:'mb12', bank:'mox', bName:'Mox Bank',
+   name:'Instant Clear — 0% Interest on External Credit Card Bills',
+   types:['貸款'],
+   pStart:null, pEnd:null, pDisp:'Ongoing',
+   hl:'🔄 0% interest to clear other banks\' credit card bills (under HKD 75K)',
+   summary:'Instant Clear lets you pay off other banks\' or financial institutions\' credit card bills below HKD 75,000 in easy 3–6 month instalments at 0% interest (one-off fee applies). Available entirely via Mox app — from application to disbursement.',
+   quota:'Subject to credit assessment; bills below HKD 75,000',
+   cost:'0% interest + designated one-off fee (check Mox app for APR)',
+   tc:'https://mox.com/promotions/',
+   note:'0% interest refers to monthly fee on 3–6 month repayment period, below HKD 75,000. A one-off fee is charged. Check Mox app for APR.'},
+
+  {id:'mb13', bank:'mox', bName:'Mox Bank',
+   name:'FLYWITHMOX — Up to 52,000 Asia Miles Welcome Offer',
+   types:['迎新','旅遊'],
+   pStart:null, pEnd:'2026-03-31', pDisp:'Until 31 Mar 2026',
+   hl:'✈️ Earn up to 52,000 Asia Miles — as low as HKD 0.97 = 1 mile!',
+   summary:'Open a Mox Account and get a Mox Credit Card with invitation code "FLYWITHMOX". Spend to earn up to 52,000 Asia Miles at as low as HKD 0.97 per mile — enough miles to travel across Asia. Limited time offer.',
+   quota:'New customers only; until 31 Mar 2026',
+   cost:'Spending requirements apply to earn full miles allocation',
+   tc:'https://mox.com/promotions/',
+   note:'FLYWITHMOX Invitation Code Promotion T&C apply. Expires 31 Mar 2026. Already expired as at 17 Mar 2026 — check for new travel codes.'},
+
+  {id:'mb14', bank:'mox', bName:'Mox Bank',
+   name:'Bonus Deposit Lucky Draw — HKD 10K = 1 Draw Entry',
+   types:['活期存款','新資金'],
+   pStart:null, pEnd:'2026-04-30', pDisp:'Until 30 Apr 2026',
+   hl:'🎲 Deposit bonus funds + earn interest + lucky draw (HKD 10K = 1 entry)',
+   summary:'From now until 30 April 2026, deposit your bonus into Mox to earn great interest AND enter a lucky draw for a 1-month "free lunch". For every HKD 10,000 deposited, receive one lucky draw entry. The more you deposit, the higher your chances of winning.',
+   quota:'All Mox account holders; HKD 10,000 per entry',
+   cost:'Free — deposit any amount to earn interest; HKD 10K increments for draw entries',
+   tc:'https://mox.com/promotions/',
+   note:'Lucky draw until 30 Apr 2026. T&C apply. Minimum deposit to qualify for lucky draw: HKD 10,000.'}
+
+];
+
+// ── COMPARISON DATA ────────────────────────────────────────────────────────────
+var CMP = {
+
+  'all': {
+    title: 'Overall Bank Promotion Summary — All 7 Banks',
+    desc: 'Head-to-head overview of all 7 HK virtual banks. Winners identified per category with reasons — and what each losing bank lacks.',
+    note: '🏆 KEY WINNERS: ZA Bank dominates Investment, FX and Long-term rewards. Mox Bank wins Loan APR (1.18%), Spending CashBack (2%+3%) and Travel ecosystem. WeLab wins Welcome Cash and Referral. Airstar wins anti-fraud TD. livi wins niche insurance. Fusion data still pending.',
+    hdrs: ['Category 類別','🏆 Winner & Why / What Others Lack','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['迎新 Welcome',
+       'WeLab 🥇 — Highest raw cash (HKD 6,200+20%p.a.). ZA=stock only(no cash); Mox=HKD 1,500 cash(lower); Airstar/PAO/livi=no welcome cash',
+       '★★★★☆','★★★★★','★★★☆☆','★★★☆☆','★★★☆☆','★★★★☆'],
+      ['活期存款 Savings',
+       'Mox 🥇 — 3.5%p.a. mission bonus(ongoing)+12%p.a. MOXSMART. WeLab=20%p.a. welcome only(expires); ZA/PAO/livi=no mission-stacking mechanic',
+       '★★★★☆','★★★★☆','★★★☆☆','★★★★☆','★★★★☆','★★★★★'],
+      ['投資 Investment',
+       'ZA Bank 🥇 — Only bank with stocks+crypto+funds+StockBack all in one. All others: no crypto; no spend-to-invest mechanic; no HKD 1M lottery',
+       '★★★★★','★★★☆☆','★☆☆☆☆','★☆☆☆☆','★☆☆☆☆','★★★☆☆'],
+      ['消費 Spending',
+       'Mox 🥇 — 2%/3% reliable daily CashBack(credit card). ZA=1% stocks(upside/creative); WeLab=seasonal only; PAO=no card; livi=points only; Airstar=limited rebate',
+       '★★★★☆','★★★☆☆','★★☆☆☆','★★★☆☆','★★★☆☆','★★★★★'],
+      ['旅遊 Travel',
+       'Mox 🥇 — Trip.com 8% off+Asia Miles TD+0%FX+travel insurance+Uber HKD90. Airstar=HKD 800 rebate(5 airlines,once); ZA=FX/ATM breadth; others=minimal',
+       '★★★★☆','★★★☆☆','★☆☆☆☆','★★★☆☆','★★★★☆','★★★★★'],
+      ['貸款 Loan',
+       'Mox 🥇 — APR 1.18%(lowest,beats ZA 1.30%)+HKD 10,888 reward. ZA=fastest(90s)+HKD 1M limit; WeLab=most product variety(Tesla/Apple); others=limited',
+       '★★★★☆','★★★★☆','★★★☆☆','★★★☆☆','★☆☆☆☆','★★★★★'],
+      ['外匯 FX',
+       'ZA Bank 🥇 — 11 currencies+SWIFT 140+ countries+0 ZA fee+Mainland real-time. Mox=0%FX card fee; WeLab=best rate guarantee; others=FPS/Mainland only',
+       '★★★★★','★★★★☆','★★☆☆☆','★★☆☆☆','★★★☆☆','★★★☆☆'],
+      ['推薦 Referral',
+       'WeLab 🥇 — HKD 6,000 referrer+HKD 6,200 referee=HKD 12,200 combined. ZA=simpler but lower value; Mox=referral programme(amount unclear); PAO/livi/Airstar=minimal',
+       '★★★☆☆','★★★★★','★☆☆☆☆','★☆☆☆☆','★☆☆☆☆','★★★☆☆'],
+      ['保險 Insurance',
+       'ZA Bank 🥇 — VHIS+Life+CI in 3 mins(broadest health cover). livi=pet/home(unique niche); Mox=travel+accident; WeLab/PAO/Airstar=none or minimal',
+       '★★★★★','★★☆☆☆','★☆☆☆☆','★★★★☆','★☆☆☆☆','★★★☆☆'],
+      ['定期存款 TD',
+       'Mox 🥇 — Asia Miles TD(earn miles while saving)+FlexiBoost(locked progressive rate)+instant interest+USD TD. Airstar=anti-fraud lock+TD rate; WeLab=GoSave 2.0; others=basic',
+       '★★★☆☆','★★★★☆','★★☆☆☆','★★☆☆☆','★★★★☆','★★★★★'],
+      ['長期獎勵 Long-term',
+       'ZA Bank 🥇 — Millionaire HKD 1M+StockBack(stocks per spend, forever)+PowerDraw(200% rebate). Mox=2%/3% CashBack daily(reliable cash); others=seasonal/basic',
+       '★★★★★','★★★☆☆','★★☆☆☆','★★★☆☆','★★☆☆☆','★★★★☆'],
+      ['新資金 New Funds',
+       'WeLab 🥇 — 20%p.a.+HKD 6,200(highest rate/cash,expires 31 Mar). Mox=3.5%p.a. mission(ongoing)+lucky draw+12%p.a. MOXSMART; ZA=0% fund fee; others=standard',
+       '★★★★☆','★★★★★','★★★☆☆','★★★★☆','★★☆☆☆','★★★★☆']
+    ]
+  },
+
+  '迎新': {
+    title: '迎新 Welcome Offers — Head-to-Head',
+    desc: 'Which bank gives the most value when you first sign up? Direct comparison including Mox Bank\'s multiple welcome codes.',
+    note: '🏆 Short-term cash winner: WeLab Bank (HKD 6,200 + 20% p.a.) — ACT before 31 Mar 2026, requires FP-prefix referral code, limited quota. 🏅 Best welcome ecosystem: Mox Bank (6+ invitation codes catering to different needs — miles, CashBack, savings rate, merchants). 🏅 Long-term ecosystem: ZA Bank (StockBack + PowerDraw permanent). WHAT OTHERS LACK: PAO/livi/Airstar offer zero welcome cash. ZA Bank offers stock-based rewards only (no direct cash). Mox cannot match WeLab\'s raw HKD 6,200 single cash reward.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['🎁 Welcome Highlight',       'StockBack+PowerDraw(permanent)',         'HKD 6,200 cash+20%p.a. 🥇',     'Zero fees benefit',       'Preferential savings rate',     '0 fee 1st Mainland transfer',   '6+ invite codes: cash/miles/CashBack/savings'],
+      ['💰 Max Welcome Cash',        'N/A (stock value)',                       'Up to HKD 6,200 🥇',             'HKD 0',                   'N/A (rate benefit)',            'HKD 0',                         'Up to HKD 2,500 (MOXDEPO, min HKD 250K deposit)'],
+      ['📈 Bonus Savings Rate',       'ZA Savings Go (competitive)',             '20% p.a. (new only) 🥇',         'Standard',                'Preferential (ongoing)',        'N/A',                           '12% p.a. (MOXSMART code, new customers)'],
+      ['🛍️ Spending Welcome Reward', 'Stocks from spending (1%)',               'Year-round offers',              'N/A',                     'N/A',                           'N/A',                           '20% CashBack at 5 merchants (MOXSMART, 1 year) 🥇'],
+      ['✈️ Miles Welcome Offer',     'N/A',                                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           '52,000 Asia Miles (FLYWITHMOX, until 31 Mar) 🥇'],
+      ['📋 Code Required',           'No code needed 🥇',                       'FP-prefix ONLY ⚠️',              'No code',                 'No code',                       'No code',                       'Invitation code required ⚠️'],
+      ['📅 Expiry',                  'Permanent 🥇',                            '31 Mar 2026 ⚡',                  'Permanent 🥇',            'Permanent 🥇',                  'Limited FCFS ⚠️',               'Various (some Apr 2026)'],
+      ['🎯 Quota',                   'Unlimited 🥇',                            'Limited FCFS ⚠️',                'Unlimited 🥇',            'Unlimited 🥇',                  'Limited FCFS ⚠️',               'Varies by code'],
+      ['🕐 Account Open Time',       '2 minutes 🥇',                            '5 minutes',                      'Mobile scan+selfie',      'Minutes',                       'Digital',                       'Digital'],
+      ['⭐ Attractiveness',           '★★★★☆ (best long-term)',                '★★★★★ (best raw cash) 🥇',       '★★★☆☆ (basic)',          '★★★☆☆',                        '★★★☆☆ (niche)',                 '★★★★★ (most diverse) 🥇'],
+      ['🏆 Best For',                'Long-term spenders/investors',            'Max cash NOW (act fast!)',        'SME/simple banking',      'Savings-first customers',       'HK-Mainland users',             'Tailored needs: miles/cashback/rate']
+    ]
+  },
+
+  '活期存款': {
+    title: '活期存款 Savings Account — Head-to-Head',
+    desc: 'Which bank gives you the best everyday savings rate and features including anti-fraud protection?',
+    note: '🏆 Best ONGOING rate mechanic: Mox Bank — Mission Bonus up to 3.5% p.a. (stack payroll + invest + FX + balance missions, refreshes monthly). 🏆 Best welcome rate: WeLab 20% p.a. (new customers, expires 31 Mar 2026). 🏆 Best anti-fraud savings: Airstar Money Safe (earn same TD rate while locked + HKD 30 voucher). WHAT OTHERS LACK: ZA/PAO/livi have no mission-based rate boosting. WeLab 20% p.a. is temporary (welcome only). Mox has no physical anti-fraud lock like Airstar/livi.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['💰 Savings Product',         'ZA Savings Go (flexible)',               'GoSave+Welcome Rate',            'Standard savings',        'liviSave (preferential)',       'Standard+Money Safe',           'Mission Bonus+FlexiBoost+Payroll Bonus'],
+      ['📈 Headline Rate',           'Competitive (check app)',                 '20% p.a. (new,limited) 🥇',     'Standard rate',           'Preferential (ongoing)',        'Competitive (check app)',       'Up to 3.5% p.a. mission / 12% p.a. welcome 🥇'],
+      ['🎯 Rate Boosting Mechanic',  'None',                                    'Welcome rate only ⚠️',           'None',                    'None',                          'None',                          'Yes: 4-mission stack (payroll/invest/FX/balance) 🥇'],
+      ['🔒 Anti-Fraud Lock',         'Not available',                           'Not available',                  'Device detection',        'Money Safe (any amount)',       'Money Safe+HKD 30 voucher 🥇', 'Not applicable'],
+      ['💎 Locked Fund Interest',    'N/A',                                     'N/A',                            'N/A',                     'Same savings rate while locked','Same TD rate while locked 🥇', 'N/A'],
+      ['💸 Monthly Recurring Bonus', 'None',                                    'None',                           'None',                    'None',                          'None',                          'Yes — mission bonus kicks in instantly, every month 🥇'],
+      ['💳 Min Deposit',             'HKD 0 🥇',                               'HKD 0 🥇',                       'HKD 0 🥇',                'HKD 0 🥇',                     'N/A',                           'HKD 0 🥇'],
+      ['💸 Account Fee',             'None 🥇',                                 'None 🥇',                        'None 🥇',                 'None 🥇',                      'None 🥇',                       'None 🥇'],
+      ['🏦 Deposit Protection',      'HKD 800,000',                             'HKD 800,000',                    'Yes',                     'Yes',                           'Yes',                           'Yes'],
+      ['⭐ Attractiveness',          '★★★★☆ (flexible)',                       '★★★★☆ (welcome rate)',           '★★★☆☆ (basic)',          '★★★★☆ (anti-fraud)',           '★★★★☆ (anti-fraud+voucher)',    '★★★★★ (mission mechanic) 🥇'],
+      ['🏆 Best For',                'Everyday flexible savings',               'Max interest (new, act fast!)',   'Simple, no-frills',       'Safety-conscious savers',       'Anti-fraud-focused savers',     'Active users who complete banking missions']
+    ]
+  },
+
+  '投資': {
+    title: '投資 Investment — Head-to-Head',
+    desc: 'Which bank offers the best investment promotions and product range?',
+    note: '🏆 Clear winner: ZA Bank — only HK virtual bank with stocks (HK+US) + crypto (24/7) + funds (0% sub fee) + StockBack (earn stocks from EVERY spend) + PowerDraw + Stock PowerDraw, all in one app. WHAT OTHERS LACK: WeLab = advisory only, no direct trading. Mox = Scratch to Win investment promo (limited) + USD 30 free stocks on opening, but no ongoing spend-to-invest mechanic. PAO/livi/Airstar = virtually no investment products. Verdict: ZA Bank dominates investment with no close competitor.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['📊 Investment Products',     'Stocks+Crypto+Funds+StockBack 🥇',       'Wealth Advisory+Funds',          'None',                    'None',                          'Limited',                       'Stocks (US top tech) via Mox Invest'],
+      ['🌐 Stock Markets',           'HKEX+NYSE+NASDAQ 🥇',                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'US top tech companies'],
+      ['₿ Crypto Trading',           '24/7 BTC/ETH 0 fee(90 days) 🥇',         'None',                           'None',                    'None',                          'None',                          'None'],
+      ['📈 Fund Subscription Fee',   '0% ALL funds (until 31 Mar) 🥇',          'Varies by fund',                 'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['🎁 Spend-to-Invest',         'StockBack: 1% real stocks / HKD 10 🥇',  'None',                           'None',                    'None',                          'None',                          'None'],
+      ['🎰 Investment Lottery/Draw', 'Stock PowerDraw+Millionaire Draw 🥇',     'None',                           'None',                    'None',                          'None',                          'Scratch to Win (up to HKD 8,888, 5 missions)'],
+      ['🆓 Free Stocks on Opening',  'N/A',                                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'USD 30 in US tech stocks 🥇 (limited period)'],
+      ['💸 Investment Welcome Bonus','Spring Eminence (selected users)',         'Digital Wealth Advisory',        'None',                    'None',                          'None',                          'Up to HKD 500 extra (invest by 31 Mar)'],
+      ['⭐ Attractiveness',          '★★★★★ — no competition 🥇',              '★★★☆☆ (advisory only)',          '★☆☆☆☆',                 '★☆☆☆☆',                        '★☆☆☆☆',                        '★★★☆☆ (US stocks, scratch promo)'],
+      ['🏆 Best For',                'ALL investors: stocks/crypto/funds',      'Passive/advisory investors',     'N/A',                     'N/A',                           'N/A',                           'US tech stock investors']
+    ]
+  },
+
+  '旅遊': {
+    title: '旅遊 Travel Offers — Head-to-Head',
+    desc: 'Which bank gives you the best overall travel benefits? Now including Mox Bank\'s strong travel ecosystem.',
+    note: '🏆 Best travel ecosystem: Mox Bank — Trip.com 8% off (all year, all airlines on platform), Asia Miles from Time Deposits, 0% FX fees on Credit Card, travel insurance with free add-on, Uber HKD 90 off. 🥈 Best specific air ticket rebate: Airstar (HKD 800 cash, but only 5 named airlines, once only). 🥉 Best FX flexibility: ZA Bank (11 currencies, 140+ SWIFT). WHAT OTHERS LACK: WeLab/PAO have minimal travel benefits. Airstar\'s rebate is one-time only for 5 airlines vs Mox Trip.com (ongoing, year-round). livi covers insurance but not rebates.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['✈️ Air Ticket Rebate',       'Via travel partners (varies)',            'N/A',                            'N/A',                     'N/A',                           'Up to HKD 800 (5 airlines, once)','Up to 8% off on Trip.com (all year) 🥇'],
+      ['🌍 Platform Coverage',       'Check app',                               'N/A',                            'N/A',                     'N/A',                           '5 named airlines only ⚠️',      'Trip.com (all airlines/hotels) 🥇'],
+      ['🔄 Offer Repeatability',     'Ongoing (merchant perks)',                'N/A',                            'N/A',                     'N/A',                           'Once per cardholder ⚠️',        'Year-round, repeatable 🥇'],
+      ['💴 Multi-Currency Wallet',   '11 currencies 🥇',                        'Global Wallet (multiple)',        'N/A',                     'N/A',                           'N/A',                           'Via Mox FX'],
+      ['💱 FX Fees on Card',         'Competitive (preferred rates)',           'Best Rate Guaranteed',           'N/A',                     'N/A',                           'N/A',                           '0% FX fees on Mox Credit Card 🥇'],
+      ['🏧 Free HK ATM',             '3,000+ Visa ATMs free 🥇',               'Via debit card',                 'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['🛡️ Travel Insurance',        'Via ZA Insure (digital)',                 'N/A',                            'N/A',                     'Universal Voyage 🥇',           'N/A',                           'Travel Pick & Go + free Easter add-on'],
+      ['🚕 Transport Offer',          'N/A',                                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'Uber Taxi: up to HKD 90 off (HKD 10/month) 🥇'],
+      ['🌏 Asia Miles on TD',         'N/A',                                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'Yes — 26,000 miles per HKD 104K / 12M 🥇'],
+      ['🌍 Global Transfer',          'SWIFT 140+ countries 0 ZA fee 🥇',       'Global remittance',              'FPS only',                'FPS only',                      'Mainland WeRemit',              'Mox FX'],
+      ['⭐ Attractiveness',           '★★★★☆ (FX+ATM breadth)',                '★★★☆☆ (FX rate)',               '★☆☆☆☆',                 '★★★☆☆ (insurance)',            '★★★★☆ (HKD 800 cash)',          '★★★★★ (broadest travel ecosystem) 🥇'],
+      ['🏆 Best For',                 'Multi-currency/frequent SWIFT users',    'FX rate-conscious travellers',   'N/A',                     'Travel insurance buyers',       'Specific airline purchases',    'All travel needs: booking/FX/insurance/transport']
+    ]
+  },
+
+  '保險': {
+    title: '保險 Insurance — Head-to-Head',
+    desc: 'Which bank offers the most comprehensive and accessible insurance products?',
+    note: '🏆 Broadest health/life insurance: ZA Bank (VHIS, Life, CI — apply in 3 mins, fully digital, via ZA Insure). 🏆 Most unique niche products: livi bank (Pet Care + Easy HomeCare — exclusive, no other virtual bank). 🏆 Best travel insurance package: Mox Bank (Travel Pick & Go + free Easter add-on + Personal Accident Cushion). WHAT OTHERS LACK: WeLab/PAO/Airstar = no insurance products in promotions data. ZA Bank = no travel insurance promotion currently. livi = no health/life/CI products.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['🏥 VHIS (醫療)',              'Yes — ZA Insure 🥇',                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['❤️ Life Insurance',           'Yes — ZA Insure 🥇',                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['🫀 Critical Illness',         'Yes — ZA Insure 🥇',                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['✈️ Travel Insurance',         'Via ZA Insure (digital)',                 'N/A',                            'N/A',                     'Universal Voyage 🥇',           'N/A',                           'Travel Pick & Go + free Easter add-on 🥇'],
+      ['🧍 Personal Accident',        'N/A',                                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'Personal Accident Cushion (up to 2 months rebate) 🥇'],
+      ['🐾 Pet Insurance',            'No',                                      'N/A',                            'N/A',                     'Yes (Pet Care) 🥇',             'N/A',                           'N/A'],
+      ['🏠 Home Insurance',           'No',                                      'N/A',                            'N/A',                     'Yes (Easy HomeCare) 🥇',        'N/A',                           'N/A'],
+      ['⏱️ Application Time',         '3 minutes 🥇',                            'N/A',                            'N/A',                     'Digital',                       'N/A',                           'Digital (time not stated)'],
+      ['📱 Digital Claims',           'Fully digital 🥇',                        'N/A',                            'N/A',                     'Digital',                       'N/A',                           'Digital'],
+      ['🎁 Current Promo',            'Ongoing (3 min apply)',                   'N/A',                            'N/A',                     'Ongoing',                       'N/A',                           'Free add-on Easter (until 30 Apr) + 2-month rebate (until 31 Mar)'],
+      ['⭐ Attractiveness',           '★★★★★ (VHIS/Life/CI) 🥇',               '★☆☆☆☆',                         '★☆☆☆☆',                 '★★★★☆ (unique niche)',         '★☆☆☆☆',                        '★★★☆☆ (travel+accident)'],
+      ['🏆 Best For',                 'Health, life, critical illness cover',    'N/A',                            'N/A',                     'Pet owners, home protection',   'N/A',                           'Travel + personal accident protection']
+    ]
+  },
+
+  '貸款': {
+    title: '貸款 Loan Offers — Head-to-Head',
+    desc: 'Which bank offers the most attractive loan? Comparing APR, speed, and unique products. Important update: Mox now holds the lowest stated APR.',
+    note: '🏆 Lowest APR: Mox Bank (1.18% p.a.) — beats ZA Bank\'s 1.30% p.a. 🏆 Fastest approval: ZA Bank (90 seconds / 30 seconds existing). 🏆 Most unique products: WeLab Bank (Tesla car loan, Apple Subscribe+, Preface Learn Now Pay Later, Tax Season — all exclusive). 🏆 Best balance transfer: Mox Instant Clear (0% interest for external card bills < HKD 75K). WHAT OTHERS LACK: Airstar = no loan products. PAO/livi = SME focused, limited personal loans. ZA Bank lost APR leadership to Mox.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['💰 Max Loan Amount',          'HKD 1,000,000 🥇',                       'Varies',                         'SME-focused',             'Flexi Loan (varies)',           'N/A',                           'Check Mox app'],
+      ['📉 Lowest APR Stated',        '1.30% p.a.',                              'Varies by product',              'Varies',                  'Varies',                        'N/A',                           '1.18% p.a. 🥇 (tax season, beats ZA Bank!)'],
+      ['🏆 Cash Reward on Loan',      'N/A',                                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'Up to HKD 10,888 cash reward 🥇 (until 30 Apr)'],
+      ['⚡ Approval Speed',            '90s new / 30s existing 🥇',              'Digital (minutes)',              'Digital',                 'Digital',                       'N/A',                           'Digital via Mox app'],
+      ['🚗 Tesla Car Loan',           'No',                                      'Yes (exclusive) 🥇',             'No',                      'No',                            'N/A',                           'No'],
+      ['🍎 Apple Subscribe+',         'No',                                      'Yes (exclusive) 🥇',             'No',                      'No',                            'N/A',                           'No'],
+      ['📚 Learn Now Pay Later',      'No',                                      'Yes (Preface) 🥇',               'No',                      'No',                            'N/A',                           'No'],
+      ['🧾 Tax Season Loan',          'No',                                      'Yes 🥇',                         'No',                      'No',                            'N/A',                           'Yes (APR 1.18%) 🥇'],
+      ['🔄 External Card Clearance',  'Card Statement Instalment',               'Debt Consolidation Loan',        'N/A',                     'livi Flexi Loan',               'N/A',                           'Instant Clear: 0% interest < HKD 75K 🥇'],
+      ['🏢 SME Loan',                 'Limited',                                 'No',                             'Yes (trade SMEs) 🥇',     'Yes (livi Business) 🥇',        'N/A',                           'N/A'],
+      ['⭐ Attractiveness',           '★★★★☆ (speed+amount)',                   '★★★★★ (product variety) 🥇',    '★★★☆☆ (SME)',            '★★★☆☆ (flexible)',             '★☆☆☆☆',                        '★★★★★ (lowest APR+HKD 10.8K reward) 🥇'],
+      ['🏆 Best For',                 'Fast approval, large amount',             'Unique needs (Tesla/Apple)',      'SME trade businesses',    'Balance transfers',             'N/A',                           'Lowest interest rate + cash reward back']
+    ]
+  },
+
+  '外匯': {
+    title: '外匯 Foreign Exchange — Head-to-Head',
+    desc: 'Which bank gives you the best FX rates and cross-border transfer deals?',
+    note: '🏆 Most currencies + global reach: ZA Bank (11 currencies, 140+ SWIFT, 0 ZA fee, Mainland real-time free). 🏆 Best FX rate guarantee: WeLab Global Wallet (Best Rate Guaranteed — unique claim). 🏆 Best zero FX fee card: Mox Bank (0% FX fees on ALL Mox Credit Card transactions — ideal for travellers spending abroad). WHAT OTHERS LACK: PAO/livi = FPS only, no multi-currency. Airstar = Mainland only. Mox = no SWIFT/multi-currency wallet like ZA Bank. ZA Bank = no 0% FX card fee like Mox.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['🌐 Currencies Supported',    '11 currencies 🥇',                        'Multiple (Global Wallet)',        'HKD only',                'HKD+FPS',                      'HKD/RMB',                       'Via Mox FX (check app)'],
+      ['🌍 Global Transfer Reach',   '140+ countries SWIFT 🥇',                 'Global remittance',              'FPS only',                'FPS only',                      'Mainland focused',              'Mox FX (check app)'],
+      ['💸 Transfer Fee',            '0 ZA Bank fee 🥇',                        'N/A',                            'Free (FPS)',               'Free (FPS)',                    'N/A',                           'N/A'],
+      ['💳 0% FX Card Fee',          'No',                                       'No',                             'N/A',                     'N/A',                           'N/A',                           'Yes — 0% FX fees ALL Mox Credit Card spending 🥇'],
+      ['🇨🇳 Mainland Transfer',      'Real-time Payment Connect 0 fee 🥇',     'Via global remittance',          'FPS only',                'FPS only',                      '0 fee first time only ⚠️',      'N/A'],
+      ['📊 FX Rate Guarantee',       'Preferred rates 24/7',                    'Best Rate GUARANTEED 🥇',        'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['⏰ FX Trading Hours',        '24/7 🥇',                                  '24/7 (Global Wallet)',           'N/A',                     'N/A',                           'Business hours',                '24/7 via Mox FX'],
+      ['🔄 Wise Integration',        'Yes (express remittance) 🥇',             'No',                             'No',                      'No',                            'No',                            'No'],
+      ['🏧 Free ATM Withdrawal',     '3,000+ HK Visa ATMs free 🥇',             'Via debit card',                 'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['⭐ Attractiveness',          '★★★★★ (breadth+Mainland) 🥇',            '★★★★☆ (rate guarantee)',         '★★☆☆☆',                 '★★☆☆☆',                        '★★★☆☆ (Mainland)',              '★★★☆☆ (0% FX card fees)'],
+      ['🏆 Best For',                'Multi-currency, global SWIFT transfers',  'FX rate-sensitive users',        'Local FPS',               'Local FPS',                     'One-off Mainland transfer',     'Overseas card spending (0% FX fee)']
+    ]
+  },
+
+  '推薦': {
+    title: '推薦 Referral Programs — Head-to-Head',
+    desc: 'Which bank pays you the most for referring friends?',
+    note: '🏆 Highest cash value: WeLab Bank (referrer up to HKD 6,000 + referee up to HKD 6,200 = combined HKD 12,200 potential). IMPORTANT: referral code MUST start with FP prefix — TE/TR/TW codes do NOT qualify. 🥈 Most complete referral ecosystem: Mox Bank (Mox Referral Programme ongoing + new round). ZA Bank = simpler but lower stated value. WHAT OTHERS LACK: PAO/livi/Airstar = minimal/no referral programmes. WeLab = complex code format requirements and mission completion needed.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['💰 Max Referrer Reward',     'Varies (cash/ZA Coin)',                   'Up to HKD 6,000 🥇',             'N/A',                     'N/A',                           'N/A',                           'Check Mox Referral Programme'],
+      ['🎁 Referee Bonus',           'ZA welcome benefits',                     'Up to HKD 6,200 🥇',             'N/A',                     'N/A',                           'N/A',                           'Welcome offer benefits'],
+      ['💎 Combined Total',          'N/A',                                     'Up to HKD 12,200 🥇',            'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['📋 Code Format Required',    'No code needed 🥇',                       'FP-prefix ONLY ⚠️',              'N/A',                     'N/A',                           'N/A',                           'Via Mox app sharing'],
+      ['🏦 Account Referral',        'Yes',                                     'Yes (Buddy Booster)',             'N/A',                     'N/A',                           'N/A',                           'Yes (Mox Referral Programme) 🥇'],
+      ['💳 Loan Referral',           'Yes (Refer-to-Loan)',                     'Yes (R-Friend Loan)',            'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['🎯 Missions Required',       'No 🥇',                                   'Yes ⚠️ (referee must complete)', 'N/A',                     'N/A',                           'N/A',                           'Standard T&C'],
+      ['📅 Current Status',          'Ongoing 🥇',                              'Buddy: ongoing; Welcome: 31 Mar 2026 ⚡','N/A',             'N/A',                           'N/A',                           'New round ongoing 🥇'],
+      ['⭐ Attractiveness',          '★★★★☆ (simple,ongoing)',                 '★★★★★ (highest cash) 🥇',        '★☆☆☆☆',                 '★☆☆☆☆',                        '★☆☆☆☆',                        '★★★☆☆ (ongoing,simple)'],
+      ['🏆 Best For',                'Simple referrals + loan referrals',       'Max cash (if code valid)',        'N/A',                     'N/A',                           'N/A',                           'Easy sharing, new round']
+    ]
+  },
+
+  '定期存款': {
+    title: '定期存款 Time Deposit — Head-to-Head',
+    desc: 'Which bank offers the most attractive time deposit product and promotion?',
+    note: '🏆 Most innovative TD ecosystem: Mox Bank — Asia Miles TD (earn miles instead of cash, 26,000 miles per HKD 104K / 12 months), FlexiBoost (progressive locked rate), USD Time Deposit, instant interest paid on deposit (unique). 🥈 Best anti-fraud TD: Airstar (earn TD rates while Money Safe locked + HKD 30 voucher). 🥉 Best dedicated TD product: WeLab GoSave 2.0. WHAT OTHERS LACK: ZA/PAO/livi = standard TD, no miles, no instant interest. Airstar lacks TD breadth vs Mox.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['📦 Dedicated TD Product',    'Yes (via app)',                            'GoSave 2.0 🥇',                  'N/A',                     'N/A',                           'Yes+Money Safe combo',          'Yes (multiple: Asia Miles TD, FlexiBoost, USD TD)'],
+      ['✈️ Asia Miles TD',           'No',                                       'No',                             'No',                      'No',                            'No',                            'Yes — 26,000 miles per HKD 104K/12M 🥇'],
+      ['📈 Progressive Rate',        'No',                                       'No',                             'No',                      'No',                            'No',                            'Yes — FlexiBoost (locked, grows over time) 🥇'],
+      ['⚡ Instant Interest',         'No',                                       'No',                             'No',                      'No',                            'No',                            'Yes — paid instantly on deposit 🥇'],
+      ['💵 USD TD',                  'Check app',                               'Check app',                      'N/A',                     'N/A',                           'Check app',                     'Yes (brand new USD TD feature) 🥇'],
+      ['🔒 Anti-Fraud+TD Rate',      'No',                                       'No',                             'No',                      'Money Safe (savings rate)',     'Money Safe (TD rate) 🥇',       'N/A'],
+      ['🎁 TD Bonus/Promo',          'N/A',                                     'N/A',                            'N/A',                     'N/A',                           'HKD 30 Pacific Coffee voucher', 'Lucky draw (HKD 10K=1 entry, until 30 Apr) 🥇'],
+      ['🏦 Deposit Protection',      'HKD 800,000',                             'HKD 800,000',                    'Yes',                     'Yes',                           'Yes',                           'Yes'],
+      ['⭐ Attractiveness',          '★★★☆☆ (standard)',                        '★★★★☆ (GoSave 2.0)',             '★★☆☆☆',                 '★★☆☆☆',                        '★★★★☆ (anti-fraud+rate)',       '★★★★★ (miles+FlexiBoost+instant) 🥇'],
+      ['🏆 Best For',                'Standard TD',                             'Dedicated TD product',           'N/A',                     'Standard savings rate',         'Best security + TD rate',       'Miles earners, progressive rate seekers']
+    ]
+  },
+
+  '消費': {
+    title: '消費 Spending Offers — Head-to-Head',
+    desc: 'Which bank rewards you most reliably for everyday spending?',
+    note: '🏆 Most reliable daily CashBack: Mox Bank (2% unlimited everywhere + 3% at supermarkets, credited daily in real cash — no lottery needed, no caps). 🥈 Most innovative: ZA Bank (StockBack: 1% in REAL stocks per HKD 10, PowerDraw: up to 200% rebate + HKD 1M Millionaire Draw). WHAT OTHERS LACK: WeLab = seasonal offers only, no everyday CashBack. PAO = no card. livi = points only (not cash). Airstar = HKD 800 rebate is one-time, 5 airlines only. Mox beats others on reliable daily cash returns.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['💳 Card Type',               'Visa Debit (custom no., no fee)',         'Global Wallet Debit',            'N/A',                     'BOC Mastercard Debit',          'Visa Debit',                    'Mox Credit Card (actual credit card!) 🥇'],
+      ['🎁 Spending Reward Type',    'Real stocks (StockBack 1%) 🥇',           'Year-round merchant offers',     'N/A',                     'livi Reward points',            'Cash rebate (air tickets)',     '2% CashBack everywhere / 3% supermarkets 🥇'],
+      ['📊 CashBack Rate',           '1% (as stocks)',                          'Varies (seasonal)',              'N/A',                     'Points (rate unspecified)',     'N/A (no daily CashBack)',       '2% everywhere / 3% supermarkets 🥇'],
+      ['🎰 Lottery on Spend',        'PowerDraw: up to 200% rebate 🥇',         'No',                             'N/A',                     'No',                            'No',                            'No'],
+      ['🏆 HKD 1M Jackpot',         'Millionaire PowerDraw 🥇',               'No',                             'N/A',                     'No',                            'No',                            'No'],
+      ['🔄 CashBack Credited',       'ZA Coins (on draw win)',                  'N/A',                            'N/A',                     'Points',                        'N/A',                           'Real cash, credited DAILY 🥇'],
+      ['✈️ Air Ticket Rebate',       'Via travel partners',                     'N/A',                            'N/A',                     'N/A',                           'Up to HKD 800 (5 airlines) 🥇','Up to 8% off Trip.com (all year) 🥇'],
+      ['☕ F&B BOGO Deals',          'Yes (coffee/tea/dessert) 🥇',             'No',                             'No',                      'N/A',                           'No',                            'No'],
+      ['🎨 Custom Card Number',      'Yes (last 6 digits, HK first) 🥇',        'No',                             'No',                      'No',                            'No',                            'No'],
+      ['💱 FX Fee on Card',          'Competitive (debit)',                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           '0% FX fees on ALL spending abroad 🥇'],
+      ['💸 Annual Fee',              'None 🥇',                                 'None 🥇',                        'N/A',                     'None 🥇',                      'None 🥇',                       'None 🥇'],
+      ['⭐ Attractiveness',          '★★★★☆ (stocks+jackpot, creative)',       '★★★☆☆ (seasonal)',               '★☆☆☆☆',                 '★★★☆☆ (points)',               '★★★☆☆ (limited rebate)',        '★★★★★ (reliable daily cash) 🥇'],
+      ['🏆 Best For',                'Spenders wanting stock rewards+lottery',  'Seasonal deal seekers',          'N/A',                     'Reward points collectors',      'Big airline ticket buyers',     'Everyday spenders wanting reliable real cash']
+    ]
+  },
+
+  '長期獎勵': {
+    title: '長期獎勵 Long-term Rewards — Head-to-Head',
+    desc: 'Which bank offers the best ongoing, permanent rewards that compound over time?',
+    note: '🏆 Best permanent reward mechanic: ZA Bank — StockBack (earn real stocks on EVERY HKD 10 spend, forever), PowerDraw (up to 200% rebate, unlimited), Millionaire PowerDraw (HKD 1M pool per round, permanent). 🥈 Best reliable daily cash: Mox Bank (2% CashBack + 3% supermarkets credited DAILY, permanent; Mission Bonus up to 3.5% p.a. monthly). WHAT OTHERS LACK: WeLab = seasonal offers only, no permanent mechanic. PAO = free banking only. livi/Airstar = basic programmes without scalable ongoing rewards. Mox daily CashBack beats livi/WeLab/PAO/Airstar for reliable value.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['⭐ Long-term Program',        'StockBack+PowerDraw+Millionaire 🥇',     'Year-round card offers',         '7x24 free banking',       'livi Rewards (points)',         'Money Safe (ongoing)',          'CashBack+Mission Bonus+FlexiBoost'],
+      ['💰 Earn Rate (Spending)',     '1% real stocks / HKD 10 🥇',             'Varies by season',               'Free banking only',        'Points (rate unclear)',         'Vouchers (limited)',            '2% CashBack everywhere / 3% supermarkets 🥇'],
+      ['🎰 Jackpot Mechanic',        'HKD 1M Millionaire Draw 🥇',             'None',                           'None',                    'None',                          'None',                          'None'],
+      ['🃏 Rebate Lottery',          'PowerDraw: up to 200% rebate 🥇',         'None',                           'None',                    'None',                          'None',                          'None'],
+      ['📊 Savings Rate Program',    'ZA Savings Go (flexible)',               'Standard (post-welcome)',         'Standard',                'liviSave preferential',         'Standard',                      'Mission Bonus: up to 3.5% p.a. (monthly) 🥇'],
+      ['🔄 Anti-Fraud Ongoing',      'N/A',                                     'None',                           'None',                    'Money Safe rewards (ongoing)',  'HKD 30 Pacific (limited) 🥇',  'N/A'],
+      ['💸 Permanent Fee Waivers',   '0 card fee, 0 account fee 🥇',           '0 account fee 🥇',               '0 min, 0 fees 🥇',        '0 min, 0 fees 🥇',             '0 account fee',                 '0 annual card fee 🥇'],
+      ['📈 Reward Scales with Spend','YES — every HKD 10 earns stocks 🥇',     'Seasonal only',                  'No',                      'Yes (points)',                  'No',                            'YES — 2% on every spend, daily 🥇'],
+      ['🔢 Active Long-term Promos', '4 (StockBack/PowerDraw/Millionaire/Custom)🥇','2','1','2','1','3 (CashBack/Mission Bonus/FlexiBoost)'],
+      ['⭐ Attractiveness',          '★★★★★ (most creative, high upside) 🥇', '★★★☆☆',                          '★★☆☆☆',                 '★★★☆☆',                        '★★☆☆☆',                        '★★★★☆ (reliable daily cash)'],
+      ['🏆 Best For',                'Investors: stocks compound over time',   'Seasonal spenders',              'Fee-free banking',        'Everyday points earners',       'Security-focused savers',       'Daily spenders wanting reliable 2% cash return']
+    ]
+  },
+
+  '新資金': {
+    title: '新資金 New Funds — Head-to-Head',
+    desc: 'Moving new money to a virtual bank? Which gives the best return on fresh deposits?',
+    note: '🏆 Best cash + rate for new deposits (short-term): WeLab Bank (HKD 6,200 cash + 20% p.a.) — EXPIRES 31 Mar 2026, requires FP-prefix code. 🏆 Best ongoing rate for new funds: Mox Bank (Mission Bonus 3.5% p.a. ongoing + 12% p.a. MOXSMART welcome + lucky draw entry). 🏆 Best for new investment capital: ZA Bank (0% fund subscription fee until 31 Mar 2026 = 100% of capital invested). VERDICT: Deposit at WeLab BEFORE 31 Mar 2026; use Mox for ongoing savings mission rate; use ZA Bank for 0% entry-cost fund investing.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['📈 Welcome Rate for New $',  'ZA Savings Go (competitive)',             '20% p.a. (new, limited) 🥇',    'Standard',                'Preferential liviSave',         'Standard',                      '12% p.a. (MOXSMART) / 3.5% p.a. mission (ongoing)'],
+      ['💰 Max Welcome Cash',        'N/A (stock-based rewards)',               'Up to HKD 6,200 🥇',             'None',                    'None',                          'None',                          'HKD 2,500 (MOXDEPO, min HKD 250K deposit)'],
+      ['📊 0% Investment Entry Fee', '0% fund subscription (until 31 Mar) 🥇', 'Varies by fund',                 'N/A',                     'N/A',                           'N/A',                           'N/A'],
+      ['🏦 New Funds TD Options',    'Yes — via app',                           'GoSave 2.0 🥇',                  'N/A',                     'N/A',                           'Yes',                           'Asia Miles TD + FlexiBoost + USD TD 🥇'],
+      ['🎲 Lucky Draw on Deposit',   'No',                                      'No',                             'No',                      'No',                            'No',                            'Yes — HKD 10K = 1 lucky draw entry (until 30 Apr) 🥇'],
+      ['📅 Rate Offer Expiry',       '0% fund: 31 Mar 2026 ⚡',                 'Welcome rate: 31 Mar 2026 ⚡',   'Permanent',               'Permanent 🥇',                  'FCFS ⚠️',                      '3.5% p.a. mission: ongoing 🥇 / 12%: welcome only'],
+      ['🎯 Conditions',              '0% fund: no conditions 🥇',              'FP-prefix code; limited quota ⚠️','None',                 'None 🥇',                      'First transfer only',           'Code (welcome) / missions (ongoing)'],
+      ['💎 Ongoing Rate (post-promo)','ZA Savings Go (flexible, ongoing)',      'Standard GoSave rate',           'Standard',                'liviSave preferential 🥇',      'Standard',                      'Mission Bonus 3.5% p.a. (ongoing, monthly) 🥇'],
+      ['⭐ Attractiveness',          '★★★★★ (0% fund fee+investment) 🥇',     '★★★★★ (cash+rate) 🥇',          '★★★☆☆',                 '★★★★☆ (ongoing pref rate)',    '★★☆☆☆',                        '★★★★☆ (ongoing mission rate+lucky draw)'],
+      ['🏆 Best For',                'New investment capital (0% entry)',        'New savings (max cash, act fast!)','Simple savers',        'Ongoing savings rate',          'One-time transfer',             'Mission-driven ongoing rate + deposit lucky draw']
+    ]
+  },
+
+  '信用卡': {
+    title: '信用卡 / 扣賬卡 Card Offers — Head-to-Head',
+    desc: 'HK virtual banks mostly offer debit cards — Mox Bank is the exception with a true Credit Card. Which card offers the best promotion?',
+    note: '🏆 Best daily CashBack rate: Mox Credit Card (2% unlimited + 3% supermarkets, daily cash credited, 0% FX fees — and it is a REAL credit card, unique among HK virtual banks). 🥈 Most innovative debit card: ZA Bank (custom last 6 digits, StockBack 1% stocks, PowerDraw lottery). 🏆 Best air ticket rebate card: Airstar Visa (HKD 800 cash for HKD 8K+ spend at 5 named airlines). WHAT OTHERS LACK: WeLab/PAO/livi = no credit card (debit only). ZA = debit card (no credit line). Mox = no card number customisation.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['💳 Card Type',               'Visa DEBIT',                              'Visa/MC DEBIT',                  'N/A',                     'BOC Mastercard DEBIT',          'Visa DEBIT',                    'CREDIT Card (only virtual bank!) 🥇'],
+      ['💸 Annual Fee',              'None 🥇',                                 'None 🥇',                        'N/A',                     'None 🥇',                      'None 🥇',                       'None 🥇'],
+      ['🎨 Custom Card Number',      'Yes (last 6 digits, HK first) 🥇',        'No',                             'N/A',                     'No',                            'No',                            'No'],
+      ['📊 Daily CashBack Rate',     '1% (as real stocks)',                     'Varies (seasonal)',              'N/A',                     'Points (unspecified)',          'N/A (no ongoing CashBack)',     '2% unlimited / 3% supermarkets 🥇'],
+      ['⚡ CashBack Frequency',      'Per draw win (48h window)',               'N/A',                            'N/A',                     'Points accumulation',           'N/A',                           'Daily — real cash credited instantly 🥇'],
+      ['✈️ Air Ticket Rebate',       'Via travel partners',                     'N/A',                            'N/A',                     'N/A',                           'Up to HKD 800 (5 airlines) 🥇','Up to 8% off Trip.com (year-round) 🥇'],
+      ['💱 0% FX Fee on Card',       'No',                                      'No',                             'N/A',                     'No',                            'No',                            'Yes — 0% FX fees ALL transactions 🥇'],
+      ['✈️ Asia Miles Option',       'N/A',                                     'N/A',                            'N/A',                     'N/A',                           'N/A',                           'Yes — HKD 4=1 mile (switchable) 🥇'],
+      ['📱 Apple Pay',               'Yes (Visa)',                              'N/A',                            'N/A',                     'Yes (Mastercard)',               'N/A',                           'Yes (Credit Card) 🥇'],
+      ['📱 Google Pay',              'Yes (Visa)',                              'N/A',                            'N/A',                     'Yes (Mastercard)',               'N/A',                           'Yes (Credit Card) 🥇'],
+      ['⭐ Attractiveness',          '★★★★☆ (stocks+lottery+custom)',          '★★★☆☆ (seasonal)',               '★☆☆☆☆',                 '★★★☆☆ (MC network)',           '★★★☆☆ (rebate, limited)',       '★★★★★ (credit card+2%/3%+0%FX) 🥇'],
+      ['🏆 Best For',                'Daily spenders wanting stock ownership',  'Seasonal deals',                 'N/A',                     'Mastercard ecosystem users',    'Airline purchases (HKD 8K+)',   'All spenders: highest reliable daily CashBack']
+    ]
+  },
+
+  'Others': {
+    title: 'Others / Niche Services — Head-to-Head',
+    desc: 'Unique and niche services not found elsewhere — which bank stands out?',
+    note: '🏆 Most unique lifestyle finance products: WeLab Bank (Tesla car loan, Apple Subscribe+, Preface Learn Now Pay Later — exclusive to WeLab). 🏆 Most unique insurance niche: livi bank (Pet Care, Easy HomeCare — no other virtual bank offers these). 🏆 Mox unique: Asia Miles TD, FlexiBoost, Instant Clear (0% interest external card bills), Trip.com year-round exclusive. 🏆 PAO/livi: best SME banking among virtual banks. Fusion data still pending.',
+    hdrs: ['比較項目','ZA Bank','WeLab Bank','PAObank','livi bank','Airstar Bank','Mox Bank'],
+    rows: [
+      ['🐾 Pet Insurance',           'No',                                      'No',                             'No',                      'Yes (Pet Care) 🥇',             'No',                            'No'],
+      ['🏠 Home Insurance',          'No',                                      'No',                             'No',                      'Yes (Easy HomeCare) 🥇',        'No',                            'No'],
+      ['🚗 Tesla Car Loan',          'No',                                      'Yes (exclusive) 🥇',             'No',                      'No',                            'No',                            'No'],
+      ['🍎 Apple Subscribe+',        'No',                                      'Yes (exclusive) 🥇',             'No',                      'No',                            'No',                            'No'],
+      ['📚 Learn Now Pay Later',     'No',                                      'Yes (Preface) 🥇',               'No',                      'No',                            'No',                            'No'],
+      ['☕ Coffee Voucher Promo',    'No',                                      'No',                             'No',                      'No',                            'Yes (HKD 30 Pacific) 🥇',       'No'],
+      ['🎫 Asia Miles TD',           'No',                                      'No',                             'No',                      'No',                            'No',                            'Yes (unique to Mox!) 🥇'],
+      ['💸 0% External Bill Clear',  'No',                                      'No',                             'No',                      'No',                            'No',                            'Yes (Instant Clear < HKD 75K) 🥇'],
+      ['🛒 Gadget Marketplace',      'No',                                      'No',                             'No',                      'No',                            'No',                            'Mox Zone on The Club (100+ gadgets) 🥇'],
+      ['🏢 SME Banking',             'Limited',                                 'No',                             'Yes (trade) 🥇',          'Yes (livi Business) 🥇',        'No',                            'N/A'],
+      ['⭐ Uniqueness Score',        '★★★☆☆ (broad, standard)',                '★★★★★ (Tesla/Apple/Preface) 🥇','★★★☆☆ (SME)',            '★★★★★ (pet/home insurance) 🥇','★★★☆☆ (coffee voucher)',        '★★★★☆ (Asia Miles TD/Instant Clear/Mox Zone)'],
+      ['🏆 Best For',                'All-round digital banking',               'Lifestyle finance (cars/gadgets)','SME trade',             'Pet/home owners; SME',          'Mainland+safety',               'Miles savers, external bill clearers, gadget buyers']
+    ]
+  }
+
+};
+
+// ── UTILS ──────────────────────────────────────────────────────────────────────
+function getEl(id) { return document.getElementById(id); }
+
+function isValid(p) {
+  if (!p.pEnd) return true;
+  return p.pEnd >= TODAY_STR;
+}
+
+function isExpiringSoon(p) {
+  if (!p.pEnd) return false;
+  var end = new Date(p.pEnd);
+  var diff = (end - TODAY) / (1000 * 60 * 60 * 24);
+  return diff >= 0 && diff <= 30;
+}
+
+function getValidityInfo(p) {
+  if (!p.pEnd) return { cls: 'v-ongoing', lbl: '🔄 Ongoing' };
+  if (p.pEnd < TODAY_STR) return { cls: 'v-expired', lbl: '❌ Expired' };
+  if (isExpiringSoon(p)) return { cls: 'v-expiring', lbl: '⚡ Expiring Soon' };
+  return { cls: 'v-valid', lbl: '✅ Valid' };
+}
+
+function bankColor(bank) {
+  var m = {za:'var(--za)',welab:'var(--welab)',pao:'var(--pao)',livi:'var(--livi)',
+           airstar:'var(--airstar)',fusion:'var(--fusion)',mox:'var(--mox)'};
+  return m[bank] || 'var(--dim)';
+}
+
+// ── FILTERS ────────────────────────────────────────────────────────────────────
+function getFiltered() {
+  var items = PROMOS.slice();
+  if (activeBank !== 'all') items = items.filter(function(p){return p.bank===activeBank;});
+  if (activeType !== 'all') items = items.filter(function(p){return p.types.indexOf(activeType)!==-1;});
+  if (searchQ) {
+    var q = searchQ.toLowerCase();
+    items = items.filter(function(p){
+      return (p.name+p.summary+p.hl+p.bName+p.types.join(' ')).toLowerCase().indexOf(q)!==-1;
+    });
+  }
+  if (showValidOnly) items = items.filter(function(p){return isValid(p);});
+  if (sortBy==='bank') items.sort(function(a,b){return a.bank.localeCompare(b.bank);});
+  else if (sortBy==='endDate') items.sort(function(a,b){
+    if (!a.pEnd&&!b.pEnd) return 0; if (!a.pEnd) return 1; if (!b.pEnd) return -1;
+    return a.pEnd.localeCompare(b.pEnd);
+  });
+  else if (sortBy==='az') items.sort(function(a,b){return a.name.localeCompare(b.name);});
+  return items;
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────────
+function renderDate() {
+  var opts = {weekday:'short',year:'numeric',month:'short',day:'numeric'};
+  getEl('elDate').textContent = TODAY.toLocaleDateString('en-HK',opts);
+}
+
+function renderBankCounts() {
+  ['all','za','welab','pao','livi','airstar','fusion','mox'].forEach(function(b){
+    var el = getEl('bc-'+b); if (!el) return;
+    el.textContent = b==='all' ? PROMOS.length : PROMOS.filter(function(p){return p.bank===b;}).length;
+  });
+}
+
+function renderStats() {
+  var total=PROMOS.length,
+      valid=PROMOS.filter(isValid).length,
+      expiring=PROMOS.filter(isExpiringSoon).length,
+      expired=PROMOS.filter(function(p){return p.pEnd&&p.pEnd<TODAY_STR;}).length;
+  getEl('stTotal').textContent=total; getEl('stValid').textContent=valid;
+  getEl('stExpiring').textContent=expiring; getEl('stExpired').textContent=expired;
+  getEl('elValidCount').textContent=valid;
+}
+
+function renderTypeTabs() {
+  var html='';
+  TYPES.forEach(function(t){
+    var count=t.id==='all'?PROMOS.length:PROMOS.filter(function(p){return p.types.indexOf(t.id)!==-1;}).length;
+    var isAct=activeType===t.id?' act':'';
+    html+='<button class="ttab'+isAct+'" onclick="setType(\''+t.id+'\',this)">'+
+      '<span>'+t.emoji+'</span><span>'+t.label+'</span><span class="ttab-cnt">'+count+'</span></button>';
+  });
+  getEl('elTypeTabs').innerHTML=html;
+}
+
+function buildCard(p) {
+  var vi=getValidityInfo(p), isExp=p.pEnd&&p.pEnd<TODAY_STR, color=bankColor(p.bank);
+  var typePills=p.types.map(function(t){return '<span class="pill">'+t+'</span>';}).join('');
+  var overlay=isExp?'<div class="exp-overlay"><div class="exp-lbl">EXPIRED</div></div>':'';
+  return '<div class="pc">'+
+    '<div class="pc-bar pc-bar-'+p.bank+'"></div>'+
+    '<div class="pc-head">'+
+      '<div class="pc-toprow">'+
+        '<div class="pc-bank"><span class="bdot" style="background:'+color+'"></span>'+
+        '<span style="color:'+color+'">'+p.bName+'</span></div>'+
+        '<span class="v-badge '+vi.cls+'">'+vi.lbl+'</span>'+
+      '</div>'+
+      '<div class="pc-name">'+p.name+'</div>'+
+      '<div class="pc-pills">'+typePills+'</div>'+
+    '</div>'+
+    '<div class="pc-hl">'+p.hl+'</div>'+
+    '<div class="pc-body">'+
+      '<div class="pc-row"><div class="pc-row-i">📅</div><div class="pc-row-k">Period:</div><div class="pc-row-v"><b>'+p.pDisp+'</b></div></div>'+
+      '<div class="pc-row"><div class="pc-row-i">👥</div><div class="pc-row-k">Quota:</div><div class="pc-row-v">'+p.quota+'</div></div>'+
+      '<div class="pc-row"><div class="pc-row-i">💰</div><div class="pc-row-k">Cost Est.:</div><div class="pc-row-v">'+p.cost+'</div></div>'+
+      '<div class="pc-sum">'+p.summary+'</div>'+
+      (p.note?'<div class="pc-row"><div class="pc-row-i">ℹ️</div><div class="pc-row-k">Note:</div>'+
+        '<div class="pc-row-v" style="font-size:.66rem;color:var(--muted)">'+p.note+'</div></div>':'')+
+    '</div>'+
+    '<div class="pc-foot">'+
+      '<a class="pc-tc" href="'+p.tc+'" target="_blank" rel="noopener">📋 T&amp;C / Official Link ↗</a>'+
+      '<span style="font-size:.6rem;color:var(--muted)">'+p.bank.toUpperCase()+'</span>'+
+    '</div>'+overlay+'</div>';
+}
+
+function renderPromos() {
+  var items=getFiltered();
+  getEl('elPromoCount').textContent=items.length+' offers';
+  if (!items.length) {
+    getEl('elGrid').innerHTML='<div class="empty"><div class="empty-ico">🔍</div>'+
+      '<p>No promotions match your filters.<br>Try a different bank or promotion type.</p></div>';
+    return;
+  }
+  getEl('elGrid').innerHTML=items.map(buildCard).join('');
+}
+
+function formatCell(val) {
+  if (!val||val==='N/A') return '<span class="na">N/A</span>';
+  if (val.indexOf('🥇')!==-1) return '<span class="win">'+val+'</span>';
+  if (val.indexOf('Yes')===0||val.indexOf('Free')===0) return '<span class="ok">'+val+'</span>';
+  if (val.indexOf('⚠️')!==-1||val.indexOf('⚡')!==-1) return '<span class="warn">'+val+'</span>';
+  if (val.indexOf('❌')!==-1) return '<span style="color:var(--red)">'+val+'</span>';
+  if (val.indexOf('No')===0) return '<span style="color:var(--muted)">'+val+'</span>';
+  return val;
+}
+
+function renderCmpTable() {
+  var key=(activeType!=='all'&&CMP[activeType])?activeType:'all';
+  var data=CMP[key]||CMP['all'];
+  var typeName=activeType==='all'?'All Types':activeType;
+  getEl('elCmpBadge').textContent=typeName;
+  getEl('elCmpDesc').innerHTML='Comparing all HK virtual banks for <strong style="color:var(--gold)">'+data.title+'</strong>. Winners shown with reasons and what others lack.';
+  var hdrs=data.hdrs;
+  var theadHTML='<thead><tr>';
+  hdrs.forEach(function(h,i){
+    if (i===1) theadHTML+='<th class="za-h" style="min-width:200px">'+h+'</th>';
+    else theadHTML+='<th style="min-width:'+(i===0?'130':'110')+'px">'+h+'</th>';
+  });
+  theadHTML+='</tr></thead>';
+  var tbodyHTML='<tbody>';
+  data.rows.forEach(function(row){
+    tbodyHTML+='<tr>';
+    row.forEach(function(cell,i){
+      if (i===0) tbodyHTML+='<td>'+cell+'</td>';
+      else if (i===1) tbodyHTML+='<td class="za-col">'+formatCell(cell)+'</td>';
+      else tbodyHTML+='<td>'+formatCell(cell)+'</td>';
+    });
+    tbodyHTML+='</tr>';
+  });
+  tbodyHTML+='</tbody>';
+  getEl('elCmpTbl').innerHTML=theadHTML+tbodyHTML;
+  getEl('elCmpNote').innerHTML='<strong>📝 Analysis:</strong> '+data.note;
+}
+
+// ── ACTIONS ────────────────────────────────────────────────────────────────────
+function setBank(bank,btn) {
+  activeBank=bank;
+  document.querySelectorAll('.btab').forEach(function(t){t.classList.remove('act');});
+  if (btn) btn.classList.add('act');
+  applyFilters();
+}
+
+function setType(type,btn) {
+  activeType=type;
+  document.querySelectorAll('.ttab').forEach(function(t){t.classList.remove('act');});
+  if (btn) btn.classList.add('act');
+  applyFilters(); renderCmpTable();
+}
+
+function applyFilters() {
+  searchQ=getEl('elSearch').value.trim();
+  showValidOnly=getEl('elValidOnly').checked;
+  sortBy=getEl('elSort').value;
+  renderPromos(); renderTypeTabs();
+}
+
+window.addEventListener('scroll',function(){
+  var btn=getEl('elStt'); if (!btn) return;
+  if (window.scrollY>400) btn.classList.add('show'); else btn.classList.remove('show');
+});
+
+function init() {
+  renderDate(); renderBankCounts(); renderStats();
+  renderTypeTabs(); renderPromos(); renderCmpTable();
+}
+</script>
+</body>
+</html>
+
